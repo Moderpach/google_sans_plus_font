@@ -88,24 +88,24 @@ clean_up() {
 
 pixel() {
 	if [ -f $ORIGDIR/product/fonts/GoogleSans-Regular.ttf ]; then
-		DEST=$PRDFONT
+		DST=$PRDFONT
 	elif [ -f $ORIGDIR/system/fonts/GoogleSans-Regular.ttf ]; then
-		DEST=$SYSFONT
+		DST=$SYSFONT
 	fi
-	if [ ! -z $DEST ]; then
+	if [ ! -z $DST ]; then
 		if [ $HF -eq 2 ]; then
-			cp $FONTDIR/tx/bf/Regular.ttf $DEST/GoogleSans-Regular.ttf
-			cp $FONTDIR/tx/bf/Italic.ttf $DEST/GoogleSans-Italic.ttf
-			cp $SYSFONT/Medium.ttf $DEST/GoogleSans-Medium.ttf
-			cp $SYSFONT/MediumItalic.ttf $DEST/GoogleSans-MediumItalic.ttf
-			cp $SYSFONT/Bold.ttf $DEST/GoogleSans-Bold.ttf
-			cp $SYSFONT/BoldItalic.ttf $DEST/GoogleSans-BoldItalic.ttf
+			cp $FONTDIR/tx/bf/Regular.ttf $DST/GoogleSans-Regular.ttf
+			cp $FONTDIR/tx/bf/Italic.ttf $DST/GoogleSans-Italic.ttf
+			cp $SYSFONT/Medium.ttf $DST/GoogleSans-Medium.ttf
+			cp $SYSFONT/MediumItalic.ttf $DST/GoogleSans-MediumItalic.ttf
+			cp $SYSFONT/Bold.ttf $DST/GoogleSans-Bold.ttf
+			cp $SYSFONT/BoldItalic.ttf $DST/GoogleSans-BoldItalic.ttf
 		else
-			cp $FONTDIR/px/*ttf $DEST
+			cp $FONTDIR/px/*ttf $DST
 		fi
 		if [ $BOLD -eq 3 ]; then
-			cp $DEST/GoogleSans-Medium.ttf $DEST/GoogleSans-Regular.ttf
-			cp $DEST/GoogleSans-MediumItalic.ttf $DEST/GoogleSans-Italic.ttf
+			cp $DST/GoogleSans-Medium.ttf $DST/GoogleSans-Regular.ttf
+			cp $DST/GoogleSans-MediumItalic.ttf $DST/GoogleSans-Italic.ttf
 		fi
 		sed -ie 3's/$/-pxl&/' $MODPROP
 		PXL=true
