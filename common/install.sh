@@ -81,6 +81,23 @@ legible() {
 	cp $SRC/*ttf $SYSFONT
 }
 
+rounded() {
+	SRC=$FONTDIR/bf/rd
+	if [ $BF -eq 2 ]; then
+		SRC=$FONTDIR/tx/bf/rd
+	fi
+	if [ $BOLD -eq 1 ]; then
+		SRC=$SRC/Regular.25.ttf
+	elif [ $BOLD -eq 2 ]; then
+		SRC=$SRC/Regular.50.ttf
+	elif $LEGIBLE; then
+		SRC=$SRC/Regular.hl.ttf
+	else
+		SRC=$SRC/Regular.ttf
+	fi
+	cp $SRC $SYSFONT/Regular.ttf
+}
+
 clean_up() {
 	rm -rf $FONTDIR
 	rmdir -p $SYSETC $PRDFONT
@@ -128,9 +145,9 @@ oxygen() {
 
 miui() {
 	if i=$(grep miui $SYSXML); then
-		sed -i '/\"miui\"/,/family>/{/700/,/>/s/MiLanProVF/Bold/;/stylevalue=\"400\"/d}' $SYSXML
-		sed -i '/\"miui-regular\"/,/family>/{/700/,/>/s/MiLanProVF/Medium/;/stylevalue=\"400\"/d}' $SYSXML
-		sed -i '/\"miui-bold\"/,/family>/{/400/,/>/s/MiLanProVF/Medium/;/700/,/>/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
+		#sed -i '/\"miui\"/,/family>/{/700/,/>/s/MiLanProVF/Bold/;/stylevalue=\"400\"/d}' $SYSXML
+		#sed -i '/\"miui-regular\"/,/family>/{/700/,/>/s/MiLanProVF/Medium/;/stylevalue=\"400\"/d}' $SYSXML
+		#sed -i '/\"miui-bold\"/,/family>/{/400/,/>/s/MiLanProVF/Medium/;/700/,/>/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
 		sed -i '/\"mipro\"/,/family>/{/700/,/>/s/MiLanProVF/Bold/;/stylevalue=\"400\"/d}' $SYSXML
 		sed -i '/\"mipro-regular\"/,/family>/{/700/,/>/s/MiLanProVF/Medium/;/stylevalue=\"400\"/d}' $SYSXML
 		sed -i '/\"mipro-medium\"/,/family>/{/400/,/>/s/MiLanProVF/Medium/;/700/,/>/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
@@ -139,10 +156,10 @@ miui() {
 		sed -i '/\"mipro-bold\"/,/family>/{/400/,/>/s/MiLanProVF/Bold/;/700/,/>/s/MiLanProVF/Black/;/stylevalue/d}' $SYSXML
 		sed -i '/\"mipro-heavy\"/,/family>/{/400/,/>/s/MiLanProVF/Black/;/stylevalue/d}' $SYSXML
 		if [ $PART -eq 1 ]; then
-			sed -i '/\"miui\"/,/family>/{/400/,/>/s/MiLanProVF/Regular/;/stylevalue=\"340\"/d}' $SYSXML
-			sed -i '/\"miui-thin\"/,/family>/{/400/,/>/s/MiLanProVF/Thin/;/700/,/>/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
-			sed -i '/\"miui-light\"/,/family>/{/400/,/>/s/MiLanProVF/Light/;/700/,/>/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
-			sed -i '/\"miui-regular\"/,/family>/{/400/,/>/s/MiLanProVF/Regular/;/stylevalue=\"340\"/d}' $SYSXML
+			#sed -i '/\"miui\"/,/family>/{/400/,/>/s/MiLanProVF/Regular/;/stylevalue=\"340\"/d}' $SYSXML
+			#sed -i '/\"miui-thin\"/,/family>/{/400/,/>/s/MiLanProVF/Thin/;/700/,/>/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
+			#sed -i '/\"miui-light\"/,/family>/{/400/,/>/s/MiLanProVF/Light/;/700/,/>/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
+			#sed -i '/\"miui-regular\"/,/family>/{/400/,/>/s/MiLanProVF/Regular/;/stylevalue=\"340\"/d}' $SYSXML
 			sed -i '/\"mipro\"/,/family>/{/400/,/>/s/MiLanProVF/Regular/;/stylevalue=\"340\"/d}' $SYSXML
 			sed -i '/\"mipro-thin\"/,/family>/{/400/,/>/s/MiLanProVF/Thin/;/700/,/>/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
 			sed -i '/\"mipro-extralight\"/,/family>/{/400/,/>/s/MiLanProVF/Thin/;/700/,/>/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
@@ -193,6 +210,7 @@ HF=1
 BF=1
 BOLD=0
 LEGIBLE=false
+ROUNDED=false
 
 ui_print "   "
 ui_print "- Enable OPTIONS?"
@@ -326,6 +344,20 @@ if $OPTION; then
 				ui_print "  Selected: No"	
 			fi
 		fi
+
+		if [ $BOLD -ne 3 ]; then
+			ui_print "   "
+			ui_print "- Rounded Corners?"
+			ui_print "  Vol+ = Yes; Vol- = No"
+			ui_print "   "
+			if $VKSEL; then
+				ROUNDED=true
+				ui_print "  Selected: Yes"
+			else
+				ui_print "  Selected: No"	
+			fi
+		fi
+
 	fi #PART1
 fi #OPTIONS
 
@@ -355,6 +387,10 @@ fi
 
 if $LEGIBLE; then
 	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
+fi
+
+if $ROUNDED; then
+	rounded; sed -ie 3's/$/-rnd&/' $MODPROP
 fi
 
 PXL=false; OOS=false; MIUI=false; LG=false
