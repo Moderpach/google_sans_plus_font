@@ -13,8 +13,8 @@ Google Sans font with additional features and improvements.
 ## Previews
 ![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/1.jpg)
 ![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/2.jpg)
-![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/3.jpg)
-![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/4.jpg)
+![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/32.jpg)
+![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/42.jpg)
 ![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/5.jpg)
 ![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/6.jpg)
 
