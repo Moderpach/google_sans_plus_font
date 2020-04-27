@@ -14,7 +14,7 @@ patch() {
 headline() {
 	cp $FONTDIR/hf/*ttf $SYSFONT
 	sed -i '/\"sans-serif\">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
-	nsss
+	#nsss
 }
 
 body() {
@@ -29,33 +29,33 @@ condensed() {
 
 full() { headline; body; condensed; }
 
-nsss() {
-	if [ $API -ge 29 ] && i=$(grep NotoSerif $SYSXML) && i=$(grep SourceSansPro $SYSXML); then
-		sed -i 's/NotoSerif-/NS-/' $SYSXML
-		SRC=$FONTDIR/hf
-		if [ $HF -eq 2 ]; then SRC=$FONTDIR/tx/hf; fi
-		cp $SRC/BoldItalic.ttf $SYSFONT/NS-BoldItalic.ttf
-		cp $SRC/Bold.ttf $SYSFONT/NS-Bold.ttf
-		SRC=$FONTDIR/bf
-		if [ $HF -eq 2 ]; then SRC=$FONTDIR/tx/bf; fi
-		cp $SRC/Italic.ttf $SYSFONT/NS-Italic.ttf
-		cp $SRC/Regular.ttf $SYSFONT/NS-Regular.ttf
-		if [ $PART -eq 1 ]; then
-			sed -i 's/SourceSansPro-SemiBold/SSP-Medium/;s/SourceSansPro-/SSP-/' $SYSXML
-			SRC=$FONTDIR/hf
-			if [ $BF -eq 2 ]; then SRC=$FONTDIR/tx/hf; fi
-			cp $SRC/BoldItalic.ttf $SYSFONT/SSP-BoldItalic.ttf
-			cp $SRC/Bold.ttf $SYSFONT/SSP-Bold.ttf
-			cp $SRC/MediumItalic.ttf $SYSFONT/SSP-MediumItalic.ttf
-			cp $SRC/Medium.ttf $SYSFONT/SSP-Medium.ttf
-			SRC=$FONTDIR/bf
-			if [ $BF -eq 2 ]; then SRC=$FONTDIR/tx/bf; fi
-			cp $SRC/Italic.ttf $SYSFONT/SSP-Italic.ttf
-			if $LEGIBLE; then SRC=$SRC/hl; fi
-			cp $SRC/Regular.ttf $SYSFONT/SSP-Regular.ttf
-		fi
-	fi
-}
+#nsss() {
+	#if [ $API -ge 29 ] && i=$(grep NotoSerif $SYSXML) && i=$(grep SourceSansPro $SYSXML); then
+		#sed -i 's/NotoSerif-/NS-/' $SYSXML
+		#SRC=$FONTDIR/hf
+		#if [ $HF -eq 2 ]; then SRC=$FONTDIR/tx/hf; fi
+		#cp $SRC/BoldItalic.ttf $SYSFONT/NS-BoldItalic.ttf
+		#cp $SRC/Bold.ttf $SYSFONT/NS-Bold.ttf
+		#SRC=$FONTDIR/bf
+		#if [ $HF -eq 2 ]; then SRC=$FONTDIR/tx/bf; fi
+		#cp $SRC/Italic.ttf $SYSFONT/NS-Italic.ttf
+		#cp $SRC/Regular.ttf $SYSFONT/NS-Regular.ttf
+		#if [ $PART -eq 1 ]; then
+			#sed -i 's/SourceSansPro-SemiBold/SSP-Medium/;s/SourceSansPro-/SSP-/' $SYSXML
+			#SRC=$FONTDIR/hf
+			#if [ $BF -eq 2 ]; then SRC=$FONTDIR/tx/hf; fi
+			#cp $SRC/BoldItalic.ttf $SYSFONT/SSP-BoldItalic.ttf
+			#cp $SRC/Bold.ttf $SYSFONT/SSP-Bold.ttf
+			#cp $SRC/MediumItalic.ttf $SYSFONT/SSP-MediumItalic.ttf
+			#cp $SRC/Medium.ttf $SYSFONT/SSP-Medium.ttf
+			#SRC=$FONTDIR/bf
+			#if [ $BF -eq 2 ]; then SRC=$FONTDIR/tx/bf; fi
+			#cp $SRC/Italic.ttf $SYSFONT/SSP-Italic.ttf
+			#if $LEGIBLE; then SRC=$SRC/hl; fi
+			#cp $SRC/Regular.ttf $SYSFONT/SSP-Regular.ttf
+		#fi
+	#fi
+#}
 
 text() {
 	if [ $HF -eq 2 ]; then cp $FONTDIR/tx/hf/*ttf $SYSFONT; fi
@@ -145,9 +145,6 @@ oxygen() {
 
 miui() {
 	if i=$(grep miui $SYSXML); then
-		#sed -i '/\"miui\"/,/family>/{/700/,/>/s/MiLanProVF/Bold/;/stylevalue=\"400\"/d}' $SYSXML
-		#sed -i '/\"miui-regular\"/,/family>/{/700/,/>/s/MiLanProVF/Medium/;/stylevalue=\"400\"/d}' $SYSXML
-		#sed -i '/\"miui-bold\"/,/family>/{/400/,/>/s/MiLanProVF/Medium/;/700/,/>/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
 		sed -i '/\"mipro\"/,/family>/{/700/,/>/s/MiLanProVF/Bold/;/stylevalue=\"400\"/d}' $SYSXML
 		sed -i '/\"mipro-regular\"/,/family>/{/700/,/>/s/MiLanProVF/Medium/;/stylevalue=\"400\"/d}' $SYSXML
 		sed -i '/\"mipro-medium\"/,/family>/{/400/,/>/s/MiLanProVF/Medium/;/700/,/>/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
@@ -156,10 +153,6 @@ miui() {
 		sed -i '/\"mipro-bold\"/,/family>/{/400/,/>/s/MiLanProVF/Bold/;/700/,/>/s/MiLanProVF/Black/;/stylevalue/d}' $SYSXML
 		sed -i '/\"mipro-heavy\"/,/family>/{/400/,/>/s/MiLanProVF/Black/;/stylevalue/d}' $SYSXML
 		if [ $PART -eq 1 ]; then
-			#sed -i '/\"miui\"/,/family>/{/400/,/>/s/MiLanProVF/Regular/;/stylevalue=\"340\"/d}' $SYSXML
-			#sed -i '/\"miui-thin\"/,/family>/{/400/,/>/s/MiLanProVF/Thin/;/700/,/>/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
-			#sed -i '/\"miui-light\"/,/family>/{/400/,/>/s/MiLanProVF/Light/;/700/,/>/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
-			#sed -i '/\"miui-regular\"/,/family>/{/400/,/>/s/MiLanProVF/Regular/;/stylevalue=\"340\"/d}' $SYSXML
 			sed -i '/\"mipro\"/,/family>/{/400/,/>/s/MiLanProVF/Regular/;/stylevalue=\"340\"/d}' $SYSXML
 			sed -i '/\"mipro-thin\"/,/family>/{/400/,/>/s/MiLanProVF/Thin/;/700/,/>/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
 			sed -i '/\"mipro-extralight\"/,/family>/{/400/,/>/s/MiLanProVF/Thin/;/700/,/>/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
