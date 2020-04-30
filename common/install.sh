@@ -1,3 +1,4 @@
+ORIGDIR=/sbin/.magisk/mirror
 FONTDIR=$MODPATH/custom
 SYSFONT=$MODPATH/system/fonts
 PRDFONT=$MODPATH/system/product/fonts
