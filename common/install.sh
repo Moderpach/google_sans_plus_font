@@ -5,27 +5,26 @@ PRDFONT=$MODPATH/system/product/fonts
 SYSETC=$MODPATH/system/etc
 SYSXML=$SYSETC/fonts.xml
 MODPROP=$MODPATH/module.prop
-SED=$FONTDIR/sed
 
 patch() {
 	cp $ORIGDIR/system/etc/fonts.xml $SYSXML
-	$SED -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
-	$SED -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
+	sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
+	sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
 }
 
 headline() {
 	cp $FONTDIR/hf/*ttf $SYSFONT
-	$SED -i '/"sans-serif">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
+	sed -i '/"sans-serif">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
 }
 
 body() {
 	cp $FONTDIR/bf/*ttf $SYSFONT 
-	$SED -i '/"sans-serif">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $SYSXML
+	sed -i '/"sans-serif">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $SYSXML
 }
 
 condensed() {
 	cp $FONTDIR/cf/*ttf $SYSFONT
-	$SED -i 's/RobotoC/C/' $SYSXML
+	sed -i 's/RobotoC/C/' $SYSXML
 }
 
 full() { headline; body; condensed; }
@@ -44,8 +43,8 @@ bold() {
 	if [ $BOLD -eq 1 ]; then cp $SRC/25/*ttf $SYSFONT
 	elif [ $BOLD -eq 2 ]; then cp $SRC/50/*ttf $SYSFONT
 	else
-		$SED -i '/"sans-serif">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
-		$SED -i '/"sans-serif-condensed">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
+		sed -i '/"sans-serif">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
+		sed -i '/"sans-serif-condensed">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
 	fi
 }
 
@@ -97,7 +96,7 @@ pixel() {
 			cp $DST/GoogleSans-Medium.ttf $DST/GoogleSans-Regular.ttf
 			cp $DST/GoogleSans-MediumItalic.ttf $DST/GoogleSans-Italic.ttf
 		fi
-		$SED -ie 3's/$/-pxl&/' $MODPROP
+		sed -ie 3's/$/-pxl&/' $MODPROP
 		PXL=true
 	fi
 }
@@ -111,51 +110,51 @@ oxygen() {
 		cp $SYSFONT/Regular.ttf $SYSFONT/SlateForOnePlus-Book.ttf
 		cp $SYSFONT/Light.ttf $SYSFONT/SlateForOnePlus-Light.ttf
 		cp $SYSFONT/Thin.ttf $SYSFONT/SlateForOnePlus-Thin.ttf
-		$SED -ie 3's/$/-oos&/' $MODPROP
+		sed -ie 3's/$/-oos&/' $MODPROP
 		OOS=true
 	fi
 }
 
 miui() {
 	if i=$(grep miui $SYSXML); then
-		$SED -i '/"mipro"/,/family>/{/700/s/MiLanProVF/Bold/;/stylevalue="400"/d}' $SYSXML
-		$SED -i '/"mipro-regular"/,/family>/{/700/s/MiLanProVF/Medium/;/stylevalue="400"/d}' $SYSXML
-		$SED -i '/"mipro-medium"/,/family>/{/400/s/MiLanProVF/Medium/;/700/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
-		$SED -i '/"mipro-demibold"/,/family>/{/400/s/MiLanProVF/Medium/;/700/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
-		$SED -i '/"mipro-semibold"/,/family>/{/400/s/MiLanProVF/Medium/;/700/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
-		$SED -i '/"mipro-bold"/,/family>/{/400/s/MiLanProVF/Bold/;/700/s/MiLanProVF/Black/;/stylevalue/d}' $SYSXML
-		$SED -i '/"mipro-heavy"/,/family>/{/400/s/MiLanProVF/Black/;/stylevalue/d}' $SYSXML
+		sed -i '/"mipro"/,/family>/{/700/s/MiLanProVF/Bold/;/stylevalue="400"/d}' $SYSXML
+		sed -i '/"mipro-regular"/,/family>/{/700/s/MiLanProVF/Medium/;/stylevalue="400"/d}' $SYSXML
+		sed -i '/"mipro-medium"/,/family>/{/400/s/MiLanProVF/Medium/;/700/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
+		sed -i '/"mipro-demibold"/,/family>/{/400/s/MiLanProVF/Medium/;/700/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
+		sed -i '/"mipro-semibold"/,/family>/{/400/s/MiLanProVF/Medium/;/700/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
+		sed -i '/"mipro-bold"/,/family>/{/400/s/MiLanProVF/Bold/;/700/s/MiLanProVF/Black/;/stylevalue/d}' $SYSXML
+		sed -i '/"mipro-heavy"/,/family>/{/400/s/MiLanProVF/Black/;/stylevalue/d}' $SYSXML
 		if [ $PART -eq 1 ]; then
-			$SED -i '/"mipro"/,/family>/{/400/s/MiLanProVF/Regular/;/stylevalue="340"/d}' $SYSXML
-			$SED -i '/"mipro-thin"/,/family>/{/400/s/MiLanProVF/Thin/;/700/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
-			$SED -i '/"mipro-extralight"/,/family>/{/400/s/MiLanProVF/Thin/;/700/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
-			$SED -i '/"mipro-light"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
-			$SED -i '/"mipro-normal"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
-			$SED -i '/"mipro-regular"/,/family>/{/400/s/MiLanProVF/Regular/;/stylevalue="340"/d}' $SYSXML
+			sed -i '/"mipro"/,/family>/{/400/s/MiLanProVF/Regular/;/stylevalue="340"/d}' $SYSXML
+			sed -i '/"mipro-thin"/,/family>/{/400/s/MiLanProVF/Thin/;/700/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
+			sed -i '/"mipro-extralight"/,/family>/{/400/s/MiLanProVF/Thin/;/700/s/MiLanProVF/Light/;/stylevalue/d}' $SYSXML
+			sed -i '/"mipro-light"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
+			sed -i '/"mipro-normal"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
+			sed -i '/"mipro-regular"/,/family>/{/400/s/MiLanProVF/Regular/;/stylevalue="340"/d}' $SYSXML
 		fi	
-		$SED -ie 3's/$/-miui&/' $MODPROP
+		sed -ie 3's/$/-miui&/' $MODPROP
 		MIUI=true
 	fi
 }
 
 lg() {
 	if i=$(grep lg-sans-serif $SYSXML); then
-		$SED -i '/"lg-sans-serif">/,/family>/{/"lg-sans-serif">/!d};/"sans-serif">/,/family>/{/"sans-serif">/!H};/"lg-sans-serif">/G' $SYSXML
+		sed -i '/"lg-sans-serif">/,/family>/{/"lg-sans-serif">/!d};/"sans-serif">/,/family>/{/"sans-serif">/!H};/"lg-sans-serif">/G' $SYSXML
 		LG=true
 	fi
 	if [ -f $ORIGDIR/system/etc/fonts_lge.xml ]; then
 		cp $ORIGDIR/system/etc/fonts_lge.xml $SYSETC
 		LGXML=$SYSETC/fonts_lge.xml
-		$SED -i '/"default_roboto">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $LGXML
+		sed -i '/"default_roboto">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $LGXML
 		if [ $PART -eq 1 ]; then
-			$SED -i '/"default_roboto">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $LGXML
+			sed -i '/"default_roboto">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $LGXML
 			if [ $BOLD -eq 3 ]; then
-				$SED -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
+				sed -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
 			fi
 		fi
 		LG=true
 	fi
-	if $LG; then $SED -ie 3's/$/-lg&/' $MODPROP; fi
+	if $LG; then sed -ie 3's/$/-lg&/' $MODPROP; fi
 }
 
 rom() {
@@ -336,27 +335,27 @@ patch
 
 case $PART in
 	1 ) full;;
-	2 ) headline; $SED -ie 3's/$/-hf&/' $MODPROP;;
+	2 ) headline; sed -ie 3's/$/-hf&/' $MODPROP;;
 esac
 
 case $HF in
-	2 ) text; $SED -ie 3's/$/-hftxt&/' $MODPROP;;
+	2 ) text; sed -ie 3's/$/-hftxt&/' $MODPROP;;
 esac
 
 case $BF in
-	2 ) text; $SED -ie 3's/$/-bftxt&/' $MODPROP;;
+	2 ) text; sed -ie 3's/$/-bftxt&/' $MODPROP;;
 esac
 
 if [ $BOLD -ne 0 ]; then
-	bold; $SED -ie 3's/$/-bld&/' $MODPROP
+	bold; sed -ie 3's/$/-bld&/' $MODPROP
 fi
 
 if $LEGIBLE; then
-	legible; $SED -ie 3's/$/-lgbl&/' $MODPROP
+	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
 fi
 
 if $ROUNDED; then
-	rounded; $SED -ie 3's/$/-rnd&/' $MODPROP
+	rounded; sed -ie 3's/$/-rnd&/' $MODPROP
 fi
 
 PXL=false; OOS=false; MIUI=false; LG=false
