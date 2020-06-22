@@ -6,7 +6,7 @@ alias keycheck="$MODPATH/common/addon/Volume-Key-Selector/tools/$ARCH32/keycheck
 keytest() {
   ui_print "- Vol Key Test"
   ui_print "   Press a Vol Key:"
-  if (timeout 3 /system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $TMPDIR/events); then
+  if (timeout 5 /system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $TMPDIR/events); then
     return 0
   else
     ui_print "   Try again:"
@@ -55,23 +55,25 @@ chooseportold() {
 
 # Have user option to skip vol keys
 OIFS=$IFS; IFS=\|; MID=false; NEW=false
-if (timeout 1 /system/bin/getevent -c 1 > /dev/null); then
-		ui_print "- Running Volume-Key-Selector..."
-sleep 1
-case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
-  *novk*) ui_print "- Skipping Vol Keys -";;
-  *) if keytest; then
-       VKSEL=chooseport
-     else
-       VKSEL=chooseportold
-       ui_print "  ! Legacy device detected! Using old keycheck method"
-       ui_print " "
-       ui_print "- Vol Key Programming -"
-       ui_print "  Press Vol Up Again:"
-       $VKSEL "UP"
-       ui_print "  Press Vol Down"
-       $VKSEL "DOWN"
-     fi;;
-esac
+if (timeout 3 /system/bin/getevent -c 50 > /dev/null); then
+	ui_print "  "
+	ui_print "✓ Running Volume-Key-Selector..."
+	ui_print "  "
+	sleep 1
+	case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
+  	*novk*) ui_print "- Skipping Vol Keys -";;
+  	*) if keytest; then
+       	VKSEL=chooseport
+     	else
+       	VKSEL=chooseportold
+       	ui_print "  ! Legacy device detected! Using old keycheck method"
+       	ui_print " "
+       	ui_print "- Vol Key Programming -"
+       	ui_print "  Press Vol Up Again:"
+       	$VKSEL "UP"
+       	ui_print "  Press Vol Down"
+       	$VKSEL "DOWN"
+     	fi;;
+	esac
 fi
 IFS=$OIFS
