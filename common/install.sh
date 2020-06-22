@@ -177,15 +177,8 @@ BOLD=0
 LEGIBLE=false
 ROUNDED=false
 
-ui_print "   "
-ui_print "- Enable OPTIONS?"
-ui_print "  Vol+ = Yes; Vol- = No"
-ui_print "   "
-if $VKSEL; then
+if [ ! -z $VKSEL ]; then
 	OPTION=true	
-	ui_print "  Selected: Yes"
-else
-	ui_print "  Selected: No"	
 fi
 
 if $OPTION; then

@@ -55,6 +55,9 @@ chooseportold() {
 
 # Have user option to skip vol keys
 OIFS=$IFS; IFS=\|; MID=false; NEW=false
+if (timeout 1 /system/bin/getevent -c 1 > /dev/null); then
+		ui_print "- Running Volume-Key-Selector..."
+sleep 1
 case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
   *novk*) ui_print "- Skipping Vol Keys -";;
   *) if keytest; then
@@ -70,4 +73,5 @@ case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
        $VKSEL "DOWN"
      fi;;
 esac
+fi
 IFS=$OIFS
