@@ -167,9 +167,17 @@ rom() {
 	fi
 }
 
-### SELECTIONS ###
+selector() {
+  if [ $(getevent -qlc 20 | grep -cm2 'TOUCH.*DOWN') -eq 2 ]; then
+	sleep 0.2
+    return 1
+  else
+	sleep 0.2
+    return 0
+  fi
+}
 
-. $FONTDIR/vksel.sh
+### SELECTIONS ###
 
 OPTION=false
 PART=1
@@ -179,10 +187,14 @@ BOLD=0
 LEGIBLE=false
 ROUNDED=false
 
-if [ ! -z $VKSEL ]; then
+if (timeout 3 getevent -qc 50 &>/dev/null); then
+   	SEL=selector
+fi
+
+if [ ! -z $SEL ]; then
 	OPTION=true	
 	ui_print "  "
-	ui_print "✓ OPTONS are now available"
+	ui_print "✓ You enabled CUSTOMIZATIONS"
 	sleep 1
 fi
 
@@ -190,7 +202,7 @@ if $OPTION; then
 
 	ui_print "   "
 	ui_print "- WHERE to install?"
-	ui_print "  Swipe = Next; DoubleTap = Ok"
+	ui_print "  Swipe = Next Option; Double Tap = Ok"
 	ui_print "   "
 	ui_print "  1. Full"
 	ui_print "  2. Headline"
@@ -198,7 +210,7 @@ if $OPTION; then
 	ui_print "  Select:"
 	while true; do
 		ui_print "  $PART"
-		if $VKSEL; then
+		if $SEL; then
 			PART=$((PART + 1))
 		else 
 			break
@@ -213,7 +225,7 @@ if $OPTION; then
 
 	ui_print "   "
 	ui_print "- Which HEADLINE font style?"
-	ui_print "  Swipe = Next; DoubleTap = OK"
+	ui_print "  Swipe = Next Option; Double Tap = OK"
 	ui_print "   "
 	ui_print "  1. Default"
 	ui_print "  2. Text"
@@ -221,7 +233,7 @@ if $OPTION; then
 	ui_print "  Select:"
 	while true; do
 		ui_print "  $HF"
-		if $VKSEL; then
+		if $SEL; then
 			HF=$((HF + 1))
 		else 
 			break
@@ -237,7 +249,7 @@ if $OPTION; then
 	if [ $PART -eq 1 ]; then
 		ui_print "   "
 		ui_print "- Which BODY font style?"
-		ui_print "  Swipe = Next; DoubleTap = OK"
+		ui_print "  Swipe = Next Option; Double Tap = OK"
 		ui_print "   "
 		ui_print "  1. Default"
 		ui_print "  2. Text"
@@ -245,7 +257,7 @@ if $OPTION; then
 		ui_print "  Select:"
 		while true; do
 			ui_print "  $BF"
-			if $VKSEL; then
+			if $SEL; then
 				BF=$((BF + 1))
 			else 
 				break
@@ -260,9 +272,9 @@ if $OPTION; then
 
 		ui_print "   "
 		ui_print "- Use BOLD font?"
-		ui_print "  Swipe = Yes; DoubleTap = No"
+		ui_print "  Swipe = Yes; Double Tap = No"
 		ui_print "   "
-		if $VKSEL; then
+		if $SEL; then
 			BOLD=1
 			ui_print "  Selected: Yes"
 		else
@@ -273,7 +285,7 @@ if $OPTION; then
 		if [ $BOLD -eq 1 ]; then
 			ui_print "   "
 			ui_print "- How much BOLD?"
-			ui_print "  Swipe = Next; DoubleTap = OK"
+			ui_print "  Swipe = Next Option; Double Tap = OK"
 			ui_print "   "
 			ui_print "  1. Light"
 			ui_print "  2. Medium"
@@ -284,7 +296,7 @@ if $OPTION; then
 			ui_print "  Select:"
 			while true; do
 				ui_print "  $BOLD"
-				if $VKSEL; then
+				if $SEL; then
 					BOLD=$((BOLD + 1))
 				else 
 					break
@@ -303,9 +315,9 @@ if $OPTION; then
 		if [ $BF -eq 1 ] && [ $BOLD -eq 0 ]; then
 			ui_print "   "
 			ui_print "- High Legibility?"
-			ui_print "  Swipe = Yes; DoubleTap = No"
+			ui_print "  Swipe = Yes; Double Tap = No"
 			ui_print "   "
-			if $VKSEL; then
+			if $SEL; then
 				LEGIBLE=true
 				ui_print "  Selected: Yes"
 			else
@@ -317,9 +329,9 @@ if $OPTION; then
 		if [ $BOLD -ne 3 ]; then
 			ui_print "   "
 			ui_print "- Rounded Corners?"
-			ui_print "  Swipe = Yes; DoubleTap = No"
+			ui_print "  Swipe = Yes; Double Tap = No"
 			ui_print "   "
-			if $VKSEL; then
+			if $SEL; then
 				ROUNDED=true
 				ui_print "  Selected: Yes"
 			else
