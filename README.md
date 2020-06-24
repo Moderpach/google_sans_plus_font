@@ -17,6 +17,3 @@ Google Sans font with additional features and improvements.
 ![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/42.jpg)
 ![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/5.jpg)
 ![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/gsp/6.jpg)
-
-## Thanks
-- [MMT-Extended](https://github.com/Zackptg5/MMT-Extended)

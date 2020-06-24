@@ -178,7 +178,6 @@ selector() {
 }
 
 ### SELECTIONS ###
-
 OPTION=false
 PART=1
 HF=1
