@@ -71,7 +71,7 @@ rounded() {
 }
 
 clean_up() {
-	rm -rf $FONTDIR
+	rm -rf $FONTDIR $MODPATH/LICENSE
 	rmdir -p $SYSFONT $SYSETC $PRDFONT
 }
 
@@ -340,10 +340,10 @@ if $OPTION; then
 		fi
 
 	fi #PART1
+	ui_print "   "
 fi #OPTIONS
 
 ### INSTALLATION ###
-ui_print "   "
 ui_print "- Installing"
 
 mkdir -p $SYSFONT $SYSETC $PRDFONT
@@ -380,5 +380,3 @@ rom
 ### CLEAN UP ###
 ui_print "- Cleaning up"
 clean_up
-
-ui_print "   "
