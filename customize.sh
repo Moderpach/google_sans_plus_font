@@ -168,7 +168,7 @@ rom() {
 }
 
 selector() {
-  if [ $(getevent -qlc 20 | grep -cm2 'TOUCH.*DOWN') -eq 2 ]; then
+  if [ $(getevent -qlc 30 | grep -cm2 'TOUCH.*DOWN') -eq 2 ]; then
 	sleep 0.2
     return 1
   else
@@ -187,7 +187,7 @@ LEGIBLE=false
 ROUNDED=false
 
 if (timeout 3 getevent -qc 50 &>/dev/null); then
-   	SEL=selector
+	SEL=selector
 fi
 
 if [ ! -z $SEL ]; then
