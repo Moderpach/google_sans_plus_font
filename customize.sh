@@ -178,7 +178,7 @@ ROUNDED=false
 
 . $FONTDIR/touch.sh
 
-if (timeout 3 getevent -qc 50 >/dev/null); then
+if (timeout 3 getevent -qc50 >/dev/null); then
 	SEL=selector
 fi
 
