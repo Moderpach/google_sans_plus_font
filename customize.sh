@@ -178,10 +178,6 @@ ROUNDED=false
 
 . $FONTDIR/touch.sh
 
-if (timeout 3 getevent -qc50 >/dev/null); then
-	SEL=selector
-fi
-
 if [ ! -z $SEL ]; then
 	OPTION=true	
 	ui_print "  "
