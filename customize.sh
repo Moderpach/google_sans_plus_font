@@ -1,4 +1,4 @@
-ORIGDIR=/sbin/.magisk/mirror
+ORIGDIR=$(magisk --path)/.magisk/mirror
 FONTDIR=$MODPATH/fonts
 SYSFONT=$MODPATH/system/fonts
 PRDFONT=$MODPATH/system/product/fonts
@@ -72,7 +72,7 @@ rounded() {
 
 clean_up() {
 	rm -rf $FONTDIR $MODPATH/LICENSE
-	rmdir -p $SYSFONT $SYSETC $PRDFONT
+	rmdir -p $PRDFONT
 }
 
 pixel() {
