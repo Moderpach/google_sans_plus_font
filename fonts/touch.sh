@@ -1,11 +1,17 @@
+if (timeout 3 getevent -qc50 >/dev/null); then
+	SEL=selector
+else
+	return
+fi
+
 swipe() {
-		if (getevent -qc30 >/dev/null); then
+	if (getevent -qc30 >/dev/null); then
 		touch swipe
 	fi
 }
 
 tap() {
-		if (getevent -qc5 >/dev/null); then
+	if (getevent -qc5 >/dev/null); then
 		touch tap
 	fi
 }
@@ -15,19 +21,9 @@ selector() {
 	tap &
 	swipe &
 	while true; do
-		if [ -f tap ]; then
-			break
-		fi
+		[ -f tap ] && break
 	done
 	sleep 0.5
 	pkill getevent
-	if [ -f swipe ]; then
-		return 1
-	else 
-		return 0
-	fi
+	[ -f swipe ] && return 1 || return 0
 }
-
-if (timeout 3 getevent -qc50 >/dev/null); then
-	SEL=selector
-fi

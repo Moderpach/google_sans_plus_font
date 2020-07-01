@@ -1,1 +1,1 @@
-rounded 30
+rounded 30 (-> bold)

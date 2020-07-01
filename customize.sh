@@ -1,4 +1,5 @@
-ORIGDIR=$(magisk --path)/.magisk/mirror
+[ -z $MAGISKTMP ] && MAGISKTMP=$(magisk --path)/.magisk
+ORIGDIR=$MAGISKTMP/mirror
 FONTDIR=$MODPATH/fonts
 SYSFONT=$MODPATH/system/fonts
 PRDFONT=$MODPATH/system/product/fonts
