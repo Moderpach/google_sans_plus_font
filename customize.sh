@@ -1,4 +1,4 @@
-[ -z $MAGISKTMP ] && MAGISKTMP=$(magisk --path)/.magisk
+[ ! $MAGISKTMP ] && MAGISKTMP=$(magisk --path)/.magisk
 ORIGDIR=$MAGISKTMP/mirror
 FONTDIR=$MODPATH/fonts
 SYSFONT=$MODPATH/system/fonts
@@ -8,7 +8,7 @@ SYSXML=$SYSETC/fonts.xml
 MODPROP=$MODPATH/module.prop
 
 patch() {
-	cp $ORIGDIR/system/etc/fonts.xml $SYSXML
+	[ -f $ORIGDIR/system/etc/fonts.xml ] && cp $ORIGDIR/system/etc/fonts.xml $SYSXML || abort
 	sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
 	sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
 }
@@ -31,7 +31,7 @@ condensed() {
 full() { headline; body; condensed; }
 
 text() {
-	if [ $HF -eq 2 ]; then cp $FONTDIR/tx/hf/*ttf $SYSFONT; fi
+	[ $HF -eq 2 ] && cp $FONTDIR/tx/hf/*ttf $SYSFONT
 	if [ $BF -eq 2 ]; then
 		cp $FONTDIR/tx/bf/*ttf $SYSFONT
 		cp $FONTDIR/tx/cf/*ttf $SYSFONT
@@ -40,7 +40,7 @@ text() {
 
 bold() {
 	SRC=$FONTDIR/bf/bd
-	if [ $BF -eq 2 ]; then SRC=$FONTDIR/tx/bf/bd; fi
+	[ $BF -eq 2 ] && SRC=$FONTDIR/tx/bf/bd
 	if [ $BOLD -eq 1 ]; then cp $SRC/25/*ttf $SYSFONT
 	elif [ $BOLD -eq 2 ]; then cp $SRC/50/*ttf $SYSFONT
 	else
@@ -56,9 +56,7 @@ legible() {
 
 rounded() {
 	SRC=$FONTDIR/bf/rd
-	if [ $BF -eq 2 ]; then
-		SRC=$FONTDIR/tx/bf/rd
-	fi
+	[ $BF -eq 2 ] && SRC=$FONTDIR/tx/bf/rd
 	if [ $BOLD -eq 1 ]; then
 		SRC=$SRC/Regular.25.ttf
 	elif [ $BOLD -eq 2 ]; then
@@ -82,14 +80,14 @@ pixel() {
 	elif [ -f $ORIGDIR/system/fonts/GoogleSans-Regular.ttf ]; then
 		DST=$SYSFONT
 	fi
-	if [ ! -z $DST ]; then
+	if [ $DST ]; then
 		if [ $HF -eq 2 ]; then
-			cp $FONTDIR/tx/bf/Regular.ttf $DST/GoogleSans-Regular.ttf
-			cp $FONTDIR/tx/bf/Italic.ttf $DST/GoogleSans-Italic.ttf
-			cp $SYSFONT/Medium.ttf $DST/GoogleSans-Medium.ttf
-			cp $SYSFONT/MediumItalic.ttf $DST/GoogleSans-MediumItalic.ttf
-			cp $SYSFONT/Bold.ttf $DST/GoogleSans-Bold.ttf
-			cp $SYSFONT/BoldItalic.ttf $DST/GoogleSans-BoldItalic.ttf
+			set BoldItalic Bold MediumItalic Medium Italic Regular
+			for i do cp $SYSFONT/$i.ttf $DST/GoogleSans-$i.ttf; done
+			if [ $PART -eq 2 ]; then
+				cp $FONTDIR/tx/bf/Regular.ttf $DST/GoogleSans-Regular.ttf
+				cp $FONTDIR/tx/bf/Italic.ttf $DST/GoogleSans-Italic.ttf
+			fi
 		else
 			cp $FONTDIR/px/*ttf $DST
 		fi
@@ -104,20 +102,16 @@ pixel() {
 
 oxygen() {
 	if [ -f $ORIGDIR/system/fonts/SlateForOnePlus-Regular.ttf ]; then
-		cp $SYSFONT/Black.ttf $SYSFONT/SlateForOnePlus-Black.ttf
-		cp $SYSFONT/Bold.ttf $SYSFONT/SlateForOnePlus-Bold.ttf
-		cp $SYSFONT/Medium.ttf $SYSFONT/SlateForOnePlus-Medium.ttf
-		cp $SYSFONT/Regular.ttf $SYSFONT/SlateForOnePlus-Regular.ttf
+		set Black Bold Medium Regular Light Thin
+		for i do cp $SYSFONT/$i.ttf $SYSFONT/SlateForOnePlus-$i.ttf; done
 		cp $SYSFONT/Regular.ttf $SYSFONT/SlateForOnePlus-Book.ttf
-		cp $SYSFONT/Light.ttf $SYSFONT/SlateForOnePlus-Light.ttf
-		cp $SYSFONT/Thin.ttf $SYSFONT/SlateForOnePlus-Thin.ttf
 		sed -ie 3's/$/-oos&/' $MODPROP
 		OOS=true
 	fi
 }
 
 miui() {
-	if i=$(grep miui $SYSXML); then
+	if grep -q miui $SYSXML; then
 		sed -i '/"mipro"/,/family>/{/700/s/MiLanProVF/Bold/;/stylevalue="400"/d}' $SYSXML
 		sed -i '/"mipro-regular"/,/family>/{/700/s/MiLanProVF/Medium/;/stylevalue="400"/d}' $SYSXML
 		sed -i '/"mipro-medium"/,/family>/{/400/s/MiLanProVF/Medium/;/700/s/MiLanProVF/Bold/;/stylevalue/d}' $SYSXML
@@ -139,7 +133,7 @@ miui() {
 }
 
 lg() {
-	if i=$(grep lg-sans-serif $SYSXML); then
+	if grep -q lg-sans-serif $SYSXML; then
 		sed -i '/"lg-sans-serif">/,/family>/{/"lg-sans-serif">/!d};/"sans-serif">/,/family>/{/"sans-serif">/!H};/"lg-sans-serif">/G' $SYSXML
 		LG=true
 	fi
@@ -179,7 +173,7 @@ ROUNDED=false
 
 . $FONTDIR/touch.sh
 
-if [ ! -z $SEL ]; then
+if [ $SEL ]; then
 	OPTION=true	
 	ui_print "  "
 	ui_print "✓ You enabled CUSTOMIZATIONS"
@@ -188,13 +182,13 @@ fi
 
 if $OPTION; then
 
-	ui_print "   "
+	ui_print "  "
 	ui_print "- WHERE to install?"
 	ui_print "  Tap = Next Option; Swipe = Ok"
-	ui_print "   "
+	ui_print "  "
 	ui_print "  1. Full"
 	ui_print "  2. Headline"
-	ui_print "   "
+	ui_print "  "
 	ui_print "  Select:"
 	while true; do
 		ui_print "  $PART"
@@ -203,21 +197,19 @@ if $OPTION; then
 		else 
 			break
 		fi
-		if [ $PART -gt 2 ]; then
-			PART=1
-		fi
+		[ $PART -gt 2 ] && PART=1
 	done
-	ui_print "   "
+	ui_print "  "
 	ui_print "  Selected: $PART"
 	sleep 0.5
 
-	ui_print "   "
+	ui_print "  "
 	ui_print "- Which HEADLINE font style?"
 	ui_print "  Tap = Next Option; Swipe = OK"
-	ui_print "   "
+	ui_print "  "
 	ui_print "  1. Default"
 	ui_print "  2. Text"
-	ui_print "   "
+	ui_print "  "
 	ui_print "  Select:"
 	while true; do
 		ui_print "  $HF"
@@ -226,22 +218,20 @@ if $OPTION; then
 		else 
 			break
 		fi
-		if [ $HF -gt 2 ]; then
-			HF=1
-		fi
+		[ $HF -gt 2 ] && HF=1
 	done
-	ui_print "   "
+	ui_print "  "
 	ui_print "  Selected: $HF"
 	sleep 0.5
 
 	if [ $PART -eq 1 ]; then
-		ui_print "   "
+		ui_print "  "
 		ui_print "- Which BODY font style?"
 		ui_print "  Tap = Next Option; Swipe = OK"
-		ui_print "   "
+		ui_print "  "
 		ui_print "  1. Default"
 		ui_print "  2. Text"
-		ui_print "   "
+		ui_print "  "
 		ui_print "  Select:"
 		while true; do
 			ui_print "  $BF"
@@ -250,18 +240,16 @@ if $OPTION; then
 			else 
 				break
 			fi
-			if [ $BF -gt 2 ]; then
-				BF=1
-			fi
+			[ $BF -gt 2 ] && BF=1
 		done
-		ui_print "   "
+		ui_print "  "
 		ui_print "  Selected: $BF"
 		sleep 0.5
 
-		ui_print "   "
+		ui_print "  "
 		ui_print "- Use BOLD font?"
 		ui_print "  Tap = Yes; Swipe = No"
-		ui_print "   "
+		ui_print "  "
 		if $SEL; then
 			BOLD=1
 			ui_print "  Selected: Yes"
@@ -271,16 +259,16 @@ if $OPTION; then
 		sleep 0.5
 
 		if [ $BOLD -eq 1 ]; then
-			ui_print "   "
+			ui_print "  "
 			ui_print "- How much BOLD?"
 			ui_print "  Tap = Next Option; Swipe = OK"
-			ui_print "   "
+			ui_print "  "
 			ui_print "  1. Light"
 			ui_print "  2. Medium"
 			if [ $HF -eq $BF ]; then
 				ui_print "  3. Strong"
 			fi
-			ui_print "   "
+			ui_print "  "
 			ui_print "  Select:"
 			while true; do
 				ui_print "  $BOLD"
@@ -295,16 +283,16 @@ if $OPTION; then
 					BOLD=1
 				fi
 			done
-			ui_print "   "
+			ui_print "  "
 			ui_print "  Selected: $BOLD"
 			sleep 0.5
 		fi
 
 		if [ $BF -eq 1 ] && [ $BOLD -eq 0 ]; then
-			ui_print "   "
+			ui_print "  "
 			ui_print "- High Legibility?"
 			ui_print "  Tap = Yes; Swipe = No"
-			ui_print "   "
+			ui_print "  "
 			if $SEL; then
 				LEGIBLE=true
 				ui_print "  Selected: Yes"
@@ -315,10 +303,10 @@ if $OPTION; then
 		fi
 
 		if [ $BOLD -ne 3 ]; then
-			ui_print "   "
+			ui_print "  "
 			ui_print "- Rounded Corners?"
 			ui_print "  Tap = Yes; Swipe = No"
-			ui_print "   "
+			ui_print "  "
 			if $SEL; then
 				ROUNDED=true
 				ui_print "  Selected: Yes"
@@ -329,7 +317,7 @@ if $OPTION; then
 		fi
 
 	fi #PART1
-	ui_print "   "
+	ui_print "  "
 fi #OPTIONS
 
 ### INSTALLATION ###
