@@ -1,5 +1,5 @@
 [ ! $MAGISKTMP ] && MAGISKTMP=$(magisk --path)/.magisk
-ORIGDIR=$MAGISKTMP/mirror
+[ -d $MAGISKTMP ] && ORIGDIR=$MAGISKTMP/mirror
 FONTDIR=$MODPATH/fonts
 SYSFONT=$MODPATH/system/fonts
 PRDFONT=$MODPATH/system/product/fonts
@@ -82,18 +82,24 @@ pixel() {
 	fi
 	if [ $DST ]; then
 		if [ $HF -eq 2 ]; then
-			set BoldItalic Bold MediumItalic Medium Italic Regular
+			set BoldItalic Bold MediumItalic Medium
 			for i do cp $SYSFONT/$i.ttf $DST/GoogleSans-$i.ttf; done
-			if [ $PART -eq 2 ]; then
-				cp $FONTDIR/tx/bf/Regular.ttf $DST/GoogleSans-Regular.ttf
-				cp $FONTDIR/tx/bf/Italic.ttf $DST/GoogleSans-Italic.ttf
-			fi
+			cp $FONTDIR/tx/bf/Regular.ttf $DST/GoogleSans-Regular.ttf
+			cp $FONTDIR/tx/bf/Italic.ttf $DST/GoogleSans-Italic.ttf
 		else
 			cp $FONTDIR/px/*ttf $DST
 		fi
-		if [ $BOLD -eq 3 ]; then
-			cp $DST/GoogleSans-Medium.ttf $DST/GoogleSans-Regular.ttf
-			cp $DST/GoogleSans-MediumItalic.ttf $DST/GoogleSans-Italic.ttf
+		if [ $BOLD -ne 0 ]; then
+			if [ $BOLD -eq 3 ]; then
+				cp $DST/GoogleSans-Medium.ttf $DST/GoogleSans-Regular.ttf
+				cp $DST/GoogleSans-MediumItalic.ttf $DST/GoogleSans-Italic.ttf
+			else
+				SRC=$FONTDIR/bf/bd
+				[ $HF -eq 2 ] && SRC=$FONTDIR/tx/bf/bd
+				[ $BOLD -eq 1 ] && SRC=$SRC/25 || SRC=$SRC/50
+				cp $SRC/Regular.ttf $DST/GoogleSans-Regular.ttf
+				cp $SRC/Italic.ttf $DST/GoogleSans-Italic.ttf
+			fi
 		fi
 		sed -ie 3's/$/-pxl&/' $MODPROP
 		PXL=true
@@ -143,9 +149,7 @@ lg() {
 		sed -i '/"default_roboto">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $LGXML
 		if [ $PART -eq 1 ]; then
 			sed -i '/"default_roboto">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $LGXML
-			if [ $BOLD -eq 3 ]; then
-				sed -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
-			fi
+			[ $BOLD -eq 3 ] && sed -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
 		fi
 		LG=true
 	fi
@@ -265,9 +269,7 @@ if $OPTION; then
 			ui_print "  "
 			ui_print "  1. Light"
 			ui_print "  2. Medium"
-			if [ $HF -eq $BF ]; then
-				ui_print "  3. Strong"
-			fi
+			[ $HF -eq $BF ] && ui_print "  3. Strong"
 			ui_print "  "
 			ui_print "  Select:"
 			while true; do
