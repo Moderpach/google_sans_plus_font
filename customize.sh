@@ -8,7 +8,7 @@ SYSXML=$SYSETC/fonts.xml
 MODPROP=$MODPATH/module.prop
 
 patch() {
-	[ -f $ORIGDIR/system/etc/fonts.xml ] && cp $ORIGDIR/system/etc/fonts.xml $SYSXML || abort
+	[ -f $ORIGDIR/system/etc/fonts.xml ] && cp $ORIGDIR/system/etc/fonts.xml $SYSXML || abort "fonts.xml: file not found"
 	sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
 	sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
 }
@@ -49,22 +49,15 @@ bold() {
 	fi
 }
 
-legible() {
-	SRC=$FONTDIR/bf/hl
-	cp $SRC/*ttf $SYSFONT
-}
+legible() { cp $FONTDIR/bf/hl/*ttf $SYSFONT; }
 
 rounded() {
 	SRC=$FONTDIR/bf/rd
 	[ $BF -eq 2 ] && SRC=$FONTDIR/tx/bf/rd
-	if [ $BOLD -eq 1 ]; then
-		SRC=$SRC/Regular.25.ttf
-	elif [ $BOLD -eq 2 ]; then
-		SRC=$SRC/Regular.50.ttf
-	elif $LEGIBLE; then
-		SRC=$SRC/Regular.hl.ttf
-	else
-		SRC=$SRC/Regular.ttf
+	if [ $BOLD -eq 1 ]; then SRC=$SRC/Regular.25.ttf
+	elif [ $BOLD -eq 2 ]; then SRC=$SRC/Regular.50.ttf
+	elif $LEGIBLE; then SRC=$SRC/Regular.hl.ttf
+	else SRC=$SRC/Regular.ttf
 	fi
 	cp $SRC $SYSFONT/Regular.ttf
 }
@@ -153,10 +146,11 @@ lg() {
 		fi
 		LG=true
 	fi
-	if $LG; then sed -ie 3's/$/-lg&/' $MODPROP; fi
+	$LG && sed -ie 3's/$/-lg&/' $MODPROP
 }
 
 rom() {
+	PXL=false; OOS=false; MIUI=false; LG=false
 	pixel
 	if ! $PXL; then oxygen
 		if ! $OOS; then miui
@@ -196,11 +190,7 @@ if $OPTION; then
 	ui_print "  Select:"
 	while true; do
 		ui_print "  $PART"
-		if $SEL; then
-			PART=$((PART + 1))
-		else 
-			break
-		fi
+		$SEL && PART=$((PART + 1)) || break
 		[ $PART -gt 2 ] && PART=1
 	done
 	ui_print "  "
@@ -217,11 +207,7 @@ if $OPTION; then
 	ui_print "  Select:"
 	while true; do
 		ui_print "  $HF"
-		if $SEL; then
-			HF=$((HF + 1))
-		else 
-			break
-		fi
+		$SEL && HF=$((HF + 1)) || break
 		[ $HF -gt 2 ] && HF=1
 	done
 	ui_print "  "
@@ -239,11 +225,7 @@ if $OPTION; then
 		ui_print "  Select:"
 		while true; do
 			ui_print "  $BF"
-			if $SEL; then
-				BF=$((BF + 1))
-			else 
-				break
-			fi
+			$SEL && BF=$((BF + 1)) || break
 			[ $BF -gt 2 ] && BF=1
 		done
 		ui_print "  "
@@ -274,11 +256,7 @@ if $OPTION; then
 			ui_print "  Select:"
 			while true; do
 				ui_print "  $BOLD"
-				if $SEL; then
-					BOLD=$((BOLD + 1))
-				else 
-					break
-				fi
+				$SEL && BOLD=$((BOLD + 1)) || break
 				if [ $BOLD -gt 2 ] && [ $HF -ne $BF ]; then
 					BOLD=1
 				elif [ $BOLD -gt 3 ] ; then
@@ -324,36 +302,14 @@ fi #OPTIONS
 
 ### INSTALLATION ###
 ui_print "- Installing"
-
 mkdir -p $SYSFONT $SYSETC $PRDFONT
 patch
-
-case $PART in
-	1 ) full;;
-	2 ) headline; sed -ie 3's/$/-hf&/' $MODPROP;;
-esac
-
-case $HF in
-	2 ) text; sed -ie 3's/$/-hftxt&/' $MODPROP;;
-esac
-
-case $BF in
-	2 ) text; sed -ie 3's/$/-bftxt&/' $MODPROP;;
-esac
-
-if [ $BOLD -ne 0 ]; then
-	bold; sed -ie 3's/$/-bld&/' $MODPROP
-fi
-
-if $LEGIBLE; then
-	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
-fi
-
-if $ROUNDED; then
-	rounded; sed -ie 3's/$/-rnd&/' $MODPROP
-fi
-
-PXL=false; OOS=false; MIUI=false; LG=false
+[ $PART -eq 1 ] && full || { headline; sed -ie 3's/$/-hf&/' $MODPROP; }
+[ $HF -eq 2 ] && { text; sed -ie 3's/$/-hftxt&/' $MODPROP; }
+[ $BF -eq 2 ] && { text; sed -ie 3's/$/-bftxt&/' $MODPROP; }
+[ $BOLD -ne 0 ] && { bold; sed -ie 3's/$/-bld&/' $MODPROP; }
+$LEGIBLE && { legible; sed -ie 3's/$/-lgbl&/' $MODPROP; }
+$ROUNDED && { rounded; sed -ie 3's/$/-rnd&/' $MODPROP; }
 rom
 
 ### CLEAN UP ###
