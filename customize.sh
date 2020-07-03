@@ -8,7 +8,7 @@ SYSXML=$SYSETC/fonts.xml
 MODPROP=$MODPATH/module.prop
 
 patch() {
-	[ -f $ORIGDIR/system/etc/fonts.xml ] && cp $ORIGDIR/system/etc/fonts.xml $SYSXML || abort "$ORIGDIR/system/etc/fonts.xml: file not found"
+	[ -f $ORIGDIR/system/etc/fonts.xml ] && cp $ORIGDIR/system/etc/fonts.xml $SYSXML || abort "! $ORIGDIR/system/etc/fonts.xml: file not found"
 	sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
 	sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
 }
@@ -174,7 +174,7 @@ ROUNDED=false
 if [ $SEL ]; then
 	OPTION=true	
 	ui_print "  "
-	ui_print "✓ You enabled CUSTOMIZATIONS"
+	ui_print "! You enabled CUSTOMIZATIONS"
 	sleep 1
 fi
 
