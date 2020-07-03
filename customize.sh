@@ -8,7 +8,7 @@ SYSXML=$SYSETC/fonts.xml
 MODPROP=$MODPATH/module.prop
 
 patch() {
-	[ -f $ORIGDIR/system/etc/fonts.xml ] && cp $ORIGDIR/system/etc/fonts.xml $SYSXML || abort "fonts.xml: file not found"
+	[ -f $ORIGDIR/system/etc/fonts.xml ] && cp $ORIGDIR/system/etc/fonts.xml $SYSXML || abort "$ORIGDIR/system/etc/fonts.xml: file not found"
 	sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
 	sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
 }
@@ -215,6 +215,7 @@ if $OPTION; then
 	sleep 0.5
 
 	if [ $PART -eq 1 ]; then
+
 		ui_print "  "
 		ui_print "- Which BODY font style?"
 		ui_print "  Tap = Next Option; Swipe = OK"
@@ -236,12 +237,7 @@ if $OPTION; then
 		ui_print "- Use BOLD font?"
 		ui_print "  Tap = Yes; Swipe = No"
 		ui_print "  "
-		if $SEL; then
-			BOLD=1
-			ui_print "  Selected: Yes"
-		else
-			ui_print "  Selected: No"	
-		fi
+		$SEL && { BOLD=1; ui_print "  Selected: Yes"; } ||  ui_print "  Selected: No"
 		sleep 0.5
 
 		if [ $BOLD -eq 1 ]; then
@@ -257,11 +253,7 @@ if $OPTION; then
 			while true; do
 				ui_print "  $BOLD"
 				$SEL && BOLD=$((BOLD + 1)) || break
-				if [ $BOLD -gt 2 ] && [ $HF -ne $BF ]; then
-					BOLD=1
-				elif [ $BOLD -gt 3 ] ; then
-					BOLD=1
-				fi
+				(( [ $BOLD -gt 2 ] && [ $HF -ne $BF ] ) || [ $BOLD -gt 3 ] ) && BOLD=1
 			done
 			ui_print "  "
 			ui_print "  Selected: $BOLD"
@@ -273,12 +265,7 @@ if $OPTION; then
 			ui_print "- High Legibility?"
 			ui_print "  Tap = Yes; Swipe = No"
 			ui_print "  "
-			if $SEL; then
-				LEGIBLE=true
-				ui_print "  Selected: Yes"
-			else
-				ui_print "  Selected: No"	
-			fi
+			$SEL && { LEGIBLE=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
 			sleep 0.5
 		fi
 
@@ -287,12 +274,7 @@ if $OPTION; then
 			ui_print "- Rounded Corners?"
 			ui_print "  Tap = Yes; Swipe = No"
 			ui_print "  "
-			if $SEL; then
-				ROUNDED=true
-				ui_print "  Selected: Yes"
-			else
-				ui_print "  Selected: No"	
-			fi
+			$SEL && { ROUNDED=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
 			sleep 0.5
 		fi
 

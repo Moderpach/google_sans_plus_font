@@ -1,20 +1,7 @@
-if i=$(timeout 3 getevent -qc 50); then
-	SEL=selector
-else
-	return
-fi
+i=$(timeout 3 getevent -qc 50) && SEL=selector || return
 
-swipe() {
-	if i=$(getevent -qc 30); then
-		touch swipe
-	fi
-}
-
-tap() {
-	if i=$(getevent -qc 5); then
-		touch tap
-	fi
-}
+swipe() { i=$(getevent -qc 30) && touch swipe; }
+tap() { i=$(getevent -qc 5) && touch tap; }
 
 selector() {
 	rm swipe tap
