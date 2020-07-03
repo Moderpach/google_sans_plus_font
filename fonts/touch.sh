@@ -1,6 +1,7 @@
 i=$(timeout 3 getevent -qc 50) && SEL=selector || return
 
 swipe() { i=$(getevent -qc 30) && touch swipe; }
+
 tap() { i=$(getevent -qc 5) && touch tap; }
 
 selector() {
