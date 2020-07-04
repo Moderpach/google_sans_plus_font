@@ -67,6 +67,8 @@ clean_up() {
 	rmdir -p $PRDFONT
 }
 
+veradd() { sed -i 3"s/$/-$1&/" $MODPROP; }
+
 pixel() {
 	if [ -f $ORIGDIR/product/fonts/GoogleSans-Regular.ttf ]; then
 		DST=$PRDFONT
@@ -94,8 +96,7 @@ pixel() {
 				cp $SRC/Italic.ttf $DST/GoogleSans-Italic.ttf
 			fi
 		fi
-		sed -ie 3's/$/-pxl&/' $MODPROP
-		PXL=true
+		veradd pxl; PXL=true
 	fi
 }
 
@@ -104,8 +105,7 @@ oxygen() {
 		set Black Bold Medium Regular Light Thin
 		for i do cp $SYSFONT/$i.ttf $SYSFONT/SlateForOnePlus-$i.ttf; done
 		cp $SYSFONT/Regular.ttf $SYSFONT/SlateForOnePlus-Book.ttf
-		sed -ie 3's/$/-oos&/' $MODPROP
-		OOS=true
+		veradd oos; OOS=true
 	fi
 }
 
@@ -126,8 +126,7 @@ miui() {
 			sed -i '/"mipro-normal"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
 			sed -i '/"mipro-regular"/,/family>/{/400/s/MiLanProVF/Regular/;/stylevalue="340"/d}' $SYSXML
 		fi	
-		sed -ie 3's/$/-miui&/' $MODPROP
-		MIUI=true
+		veradd miui; MIUI=true
 	fi
 }
 
@@ -146,15 +145,25 @@ lg() {
 		fi
 		LG=true
 	fi
-	$LG && sed -ie 3's/$/-lg&/' $MODPROP
+	$LG && veradd lg
+}
+
+samsung() {
+		if grep -q Samsung $FONTXML; then
+			sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
+			[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
+			veradd sam; SAM=true
+		fi
 }
 
 rom() {
-	PXL=false; OOS=false; MIUI=false; LG=false
+	PXL=false; OOS=false; MIUI=false; LG=false; SAM=false
 	pixel
 	if ! $PXL; then oxygen
 		if ! $OOS; then miui
 			if ! $MIUI; then lg
+				if ! $LG; then samsung
+				fi
 			fi
 		fi
 	fi
@@ -286,12 +295,12 @@ fi #OPTIONS
 ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
 patch
-[ $PART -eq 1 ] && full || { headline; sed -ie 3's/$/-hf&/' $MODPROP; }
-[ $HF -eq 2 ] && { text; sed -ie 3's/$/-hftxt&/' $MODPROP; }
-[ $BF -eq 2 ] && { text; sed -ie 3's/$/-bftxt&/' $MODPROP; }
-[ $BOLD -ne 0 ] && { bold; sed -ie 3's/$/-bld&/' $MODPROP; }
-$LEGIBLE && { legible; sed -ie 3's/$/-lgbl&/' $MODPROP; }
-$ROUNDED && { rounded; sed -ie 3's/$/-rnd&/' $MODPROP; }
+[ $PART -eq 1 ] && full || { headline; veradd hf; }
+[ $HF -eq 2 ] && { text; veradd hftxt; }
+[ $BF -eq 2 ] && { text; veradd bftxt; }
+[ $BOLD -ne 0 ] && { bold; veradd bld; }
+$LEGIBLE && { legible; veradd lgbl; }
+$ROUNDED && { rounded; veradd rnd; }
 rom
 
 ### CLEAN UP ###
