@@ -149,7 +149,7 @@ lg() {
 }
 
 samsung() {
-		if grep -q Samsung $FONTXML; then
+		if grep -q Samsung $SYSXML; then
 			sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
 			[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
 			veradd sam; SAM=true
