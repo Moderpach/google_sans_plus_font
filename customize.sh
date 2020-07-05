@@ -183,7 +183,7 @@ ROUNDED=false
 if [ $SEL ]; then
 	OPTION=true	
 	ui_print "  "
-	ui_print "! You enabled CUSTOMIZATIONS"
+	ui_print "- CUSTOMIZATIONS -"
 	sleep 1
 fi
 
