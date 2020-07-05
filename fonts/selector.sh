@@ -1,5 +1,9 @@
-i=$(timeout 1 getevent -qc 30) && return
+i=$(getevent -qc 30) &
+sleep 1; pkill getevent || { . $FONTDIR/volkey.sh; return; }
+
 i=$(timeout 2 getevent -qc 30) && SEL=selector || return
+
+KEY1=Tap; KEY2=Swipe
 
 swipe() { i=$(getevent -qc 30) && touch swipe; }
 

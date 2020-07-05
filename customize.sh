@@ -178,7 +178,7 @@ BOLD=0
 LEGIBLE=false
 ROUNDED=false
 
-. $FONTDIR/touch.sh
+. $FONTDIR/selector.sh
 
 if [ $SEL ]; then
 	OPTION=true	
@@ -191,7 +191,7 @@ if $OPTION; then
 
 	ui_print "  "
 	ui_print "- WHERE to install?"
-	ui_print "  Tap = Next Option; Swipe = Ok"
+	ui_print "  $KEY1 = Next Option; $KEY2 = Ok"
 	ui_print "  "
 	ui_print "  1. Full"
 	ui_print "  2. Headline"
@@ -208,7 +208,7 @@ if $OPTION; then
 
 	ui_print "  "
 	ui_print "- Which HEADLINE font style?"
-	ui_print "  Tap = Next Option; Swipe = OK"
+	ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 	ui_print "  "
 	ui_print "  1. Default"
 	ui_print "  2. Text"
@@ -227,7 +227,7 @@ if $OPTION; then
 
 		ui_print "  "
 		ui_print "- Which BODY font style?"
-		ui_print "  Tap = Next Option; Swipe = OK"
+		ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 		ui_print "  "
 		ui_print "  1. Default"
 		ui_print "  2. Text"
@@ -244,7 +244,7 @@ if $OPTION; then
 
 		ui_print "  "
 		ui_print "- Use BOLD font?"
-		ui_print "  Tap = Yes; Swipe = No"
+		ui_print "  $KEY1 = Yes; $KEY2 = No"
 		ui_print "  "
 		$SEL && { BOLD=1; ui_print "  Selected: Yes"; } ||  ui_print "  Selected: No"
 		sleep 0.5
@@ -252,7 +252,7 @@ if $OPTION; then
 		if [ $BOLD -eq 1 ]; then
 			ui_print "  "
 			ui_print "- How much BOLD?"
-			ui_print "  Tap = Next Option; Swipe = OK"
+			ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 			ui_print "  "
 			ui_print "  1. Light"
 			ui_print "  2. Medium"
@@ -272,7 +272,7 @@ if $OPTION; then
 		if [ $BF -eq 1 ] && [ $BOLD -eq 0 ]; then
 			ui_print "  "
 			ui_print "- High Legibility?"
-			ui_print "  Tap = Yes; Swipe = No"
+			ui_print "  $KEY1 = Yes; $KEY2 = No"
 			ui_print "  "
 			$SEL && { LEGIBLE=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
 			sleep 0.5
@@ -281,7 +281,7 @@ if $OPTION; then
 		if [ $BOLD -ne 3 ]; then
 			ui_print "  "
 			ui_print "- Rounded Corners?"
-			ui_print "  Tap = Yes; Swipe = No"
+			ui_print "  $KEY1 = Yes; $KEY2 = No"
 			ui_print "  "
 			$SEL && { ROUNDED=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
 			sleep 0.5
