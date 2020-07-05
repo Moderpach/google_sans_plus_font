@@ -1,5 +1,5 @@
 i=$(getevent -qc 30) &
-sleep 1; pkill getevent || { . $FONTDIR/volkey.sh; return; }
+sleep 0.5; pkill getevent || { . $FONTDIR/volkey.sh; return; }
 
 i=$(timeout 2 getevent -qc 30) && SEL=selector || return
 
