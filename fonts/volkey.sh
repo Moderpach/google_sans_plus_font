@@ -3,8 +3,6 @@
 chmod 755 $FONTDIR/keycheck
 alias keycheck="$FONTDIR/keycheck"
 
-KEY1=Vol+; KEY2=Vol-
-
 chooseportold() {
   # Keycheck binary by someone755 @Github, idea for code below by Zappo @xda-developers
   # Calling it first time detects previous input. Calling it second time will do what we want
@@ -33,3 +31,5 @@ ui_print "  Press Vol Up"
 $SEL "UP"
 ui_print "  Press Vol Down"
 $SEL "DOWN"
+
+KEY1=Vol+; KEY2=Vol-

@@ -184,7 +184,7 @@ if [ $SEL ]; then
 	OPTION=true	
 	ui_print "  "
 	ui_print "- CUSTOMIZATIONS -"
-	sleep 1
+	sleep 0.5
 fi
 
 if $OPTION; then
@@ -204,7 +204,7 @@ if $OPTION; then
 	done
 	ui_print "  "
 	ui_print "  Selected: $PART"
-	sleep 0.5
+	sleep 0.4
 
 	ui_print "  "
 	ui_print "- Which HEADLINE font style?"
@@ -221,7 +221,7 @@ if $OPTION; then
 	done
 	ui_print "  "
 	ui_print "  Selected: $HF"
-	sleep 0.5
+	sleep 0.4
 
 	if [ $PART -eq 1 ]; then
 
@@ -240,14 +240,14 @@ if $OPTION; then
 		done
 		ui_print "  "
 		ui_print "  Selected: $BF"
-		sleep 0.5
+		sleep 0.4
 
 		ui_print "  "
 		ui_print "- Use BOLD font?"
 		ui_print "  $KEY1 = Yes; $KEY2 = No"
 		ui_print "  "
 		$SEL && { BOLD=1; ui_print "  Selected: Yes"; } ||  ui_print "  Selected: No"
-		sleep 0.5
+		sleep 0.4
 
 		if [ $BOLD -eq 1 ]; then
 			ui_print "  "
@@ -266,7 +266,7 @@ if $OPTION; then
 			done
 			ui_print "  "
 			ui_print "  Selected: $BOLD"
-			sleep 0.5
+			sleep 0.4
 		fi
 
 		if [ $BF -eq 1 ] && [ $BOLD -eq 0 ]; then
@@ -275,7 +275,7 @@ if $OPTION; then
 			ui_print "  $KEY1 = Yes; $KEY2 = No"
 			ui_print "  "
 			$SEL && { LEGIBLE=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
-			sleep 0.5
+			sleep 0.4
 		fi
 
 		if [ $BOLD -ne 3 ]; then
@@ -284,14 +284,14 @@ if $OPTION; then
 			ui_print "  $KEY1 = Yes; $KEY2 = No"
 			ui_print "  "
 			$SEL && { ROUNDED=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
-			sleep 0.5
+			sleep 0.4
 		fi
 
 	fi #PART1
-	ui_print "  "
 fi #OPTIONS
 
 ### INSTALLATION ###
+ui_print "  "
 ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
 patch
