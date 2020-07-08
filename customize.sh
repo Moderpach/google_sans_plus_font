@@ -54,7 +54,7 @@ legible() { cp $FONTDIR/bf/hl/*ttf $SYSFONT; }
 rounded() {
 	local src=$FONTDIR/bf/rd x
 	[ $BF -eq 2 ] && src=$FONTDIR/tx/bf/rd
-	[ $BOLD -eq 1 ] && x=25 || [ $BOLD -eq 2 ] && x=50 || $LEGIBLE && x=hl
+	[ $BOLD -eq 1 ] && x=25 || ( [ $BOLD -eq 2 ] && x=50 ) || ( $LEGIBLE && x=hl )
 	cp $src/Regular$x.ttf $SYSFONT/Regular.ttf
 }
 
