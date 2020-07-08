@@ -39,10 +39,10 @@ text() {
 }
 
 bold() {
-	SRC=$FONTDIR/bf/bd
-	[ $BF -eq 2 ] && SRC=$FONTDIR/tx/bf/bd
-	if [ $BOLD -eq 1 ]; then cp $SRC/25/*ttf $SYSFONT
-	elif [ $BOLD -eq 2 ]; then cp $SRC/50/*ttf $SYSFONT
+	local src=$FONTDIR/bf/bd
+	[ $BF -eq 2 ] && src=$FONTDIR/tx/bf/bd
+	if [ $BOLD -eq 1 ]; then cp $src/25/*ttf $SYSFONT
+	elif [ $BOLD -eq 2 ]; then cp $src/50/*ttf $SYSFONT
 	else
 		sed -i '/"sans-serif">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
 		sed -i '/"sans-serif-condensed">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
@@ -52,14 +52,10 @@ bold() {
 legible() { cp $FONTDIR/bf/hl/*ttf $SYSFONT; }
 
 rounded() {
-	SRC=$FONTDIR/bf/rd
-	[ $BF -eq 2 ] && SRC=$FONTDIR/tx/bf/rd
-	if [ $BOLD -eq 1 ]; then SRC=$SRC/Regular.25.ttf
-	elif [ $BOLD -eq 2 ]; then SRC=$SRC/Regular.50.ttf
-	elif $LEGIBLE; then SRC=$SRC/Regular.hl.ttf
-	else SRC=$SRC/Regular.ttf
-	fi
-	cp $SRC $SYSFONT/Regular.ttf
+	local src=$FONTDIR/bf/rd x
+	[ $BF -eq 2 ] && src=$FONTDIR/tx/bf/rd
+	[ $BOLD -eq 1 ] && x=25 || [ $BOLD -eq 2 ] && x=50 || $LEGIBLE && x=hl
+	cp $src/Regular$x.ttf $SYSFONT/Regular.ttf
 }
 
 clean_up() {
@@ -70,30 +66,31 @@ clean_up() {
 version() { sed -i 3"s/$/-$1&/" $MODPROP; }
 
 pixel() {
+	local src dest
 	if [ -f $ORIGDIR/product/fonts/GoogleSans-Regular.ttf ]; then
-		DST=$PRDFONT
+		dest=$PRDFONT
 	elif [ -f $ORIGDIR/system/fonts/GoogleSans-Regular.ttf ]; then
-		DST=$SYSFONT
+		dest=$SYSFONT
 	fi
-	if [ $DST ]; then
+	if [ $dest ]; then
 		if [ $HF -eq 2 ]; then
 			set BoldItalic Bold MediumItalic Medium
-			for i do cp $SYSFONT/$i.ttf $DST/GoogleSans-$i.ttf; done
-			cp $FONTDIR/tx/bf/Regular.ttf $DST/GoogleSans-Regular.ttf
-			cp $FONTDIR/tx/bf/Italic.ttf $DST/GoogleSans-Italic.ttf
+			for i do cp $SYSFONT/$i.ttf $dest/GoogleSans-$i.ttf; done
+			cp $FONTDIR/tx/bf/Regular.ttf $dest/GoogleSans-Regular.ttf
+			cp $FONTDIR/tx/bf/Italic.ttf $dest/GoogleSans-Italic.ttf
 		else
-			cp $FONTDIR/px/*ttf $DST
+			cp $FONTDIR/px/*ttf $dest
 		fi
 		if [ $BOLD -ne 0 ]; then
 			if [ $BOLD -eq 3 ]; then
-				cp $DST/GoogleSans-Medium.ttf $DST/GoogleSans-Regular.ttf
-				cp $DST/GoogleSans-MediumItalic.ttf $DST/GoogleSans-Italic.ttf
+				cp $dest/GoogleSans-Medium.ttf $dest/GoogleSans-Regular.ttf
+				cp $dest/GoogleSans-MediumItalic.ttf $dest/GoogleSans-Italic.ttf
 			else
-				SRC=$FONTDIR/bf/bd
-				[ $HF -eq 2 ] && SRC=$FONTDIR/tx/bf/bd
-				[ $BOLD -eq 1 ] && SRC=$SRC/25 || SRC=$SRC/50
-				cp $SRC/Regular.ttf $DST/GoogleSans-Regular.ttf
-				cp $SRC/Italic.ttf $DST/GoogleSans-Italic.ttf
+				src=$FONTDIR/bf/bd
+				[ $HF -eq 2 ] && src=$FONTDIR/tx/bf/bd
+				[ $BOLD -eq 1 ] && src=$src/25 || src=$src/50
+				cp $src/Regular.ttf $dest/GoogleSans-Regular.ttf
+				cp $src/Italic.ttf $dest/GoogleSans-Italic.ttf
 			fi
 		fi
 		version pxl; PXL=true
@@ -137,11 +134,11 @@ lg() {
 	fi
 	if [ -f $ORIGDIR/system/etc/fonts_lge.xml ]; then
 		cp $ORIGDIR/system/etc/fonts_lge.xml $SYSETC
-		LGXML=$SYSETC/fonts_lge.xml
-		sed -i '/"default_roboto">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $LGXML
+		local lgxml=$SYSETC/fonts_lge.xml
+		sed -i '/"default_roboto">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $lgxml
 		if [ $PART -eq 1 ]; then
-			sed -i '/"default_roboto">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $LGXML
-			[ $BOLD -eq 3 ] && sed -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
+			sed -i '/"default_roboto">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $lgxml
+			[ $BOLD -eq 3 ] && sed -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $lgxml
 		fi
 		LG=true
 	fi
@@ -262,7 +259,7 @@ if $OPTION; then
 			while true; do
 				ui_print "  $BOLD"
 				$SEL && BOLD=$((BOLD + 1)) || break
-				(( [ $BOLD -gt 2 ] && [ $HF -ne $BF ] ) || [ $BOLD -gt 3 ] ) && BOLD=1
+				( [ $BOLD -gt 2 ] && [ $HF -ne $BF ] || [ $BOLD -gt 3 ] ) && BOLD=1
 			done
 			ui_print "  "
 			ui_print "  Selected: $BOLD"
