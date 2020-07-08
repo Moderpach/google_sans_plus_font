@@ -64,7 +64,7 @@ rounded() {
 
 clean_up() {
 	rm -rf $FONTDIR $MODPATH/LICENSE
-	rmdir -p $PRDFONT
+	rmdir -p $PRDFONT $SYSETC
 }
 
 version() { sed -i 3"s/$/-$1&/" $MODPROP; }
