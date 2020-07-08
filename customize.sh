@@ -146,11 +146,11 @@ lg() {
 }
 
 samsung() {
-		if grep -q Samsung $SYSXML; then
-			sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
-			[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
-			version sam; SAM=true
-		fi
+	if grep -q Samsung $SYSXML; then
+		sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
+		[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
+		version sam; SAM=true
+	fi
 }
 
 rom() {
