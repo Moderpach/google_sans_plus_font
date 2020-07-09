@@ -90,7 +90,7 @@ pixel() {
 				cp $src/Italic.ttf $dest/GoogleSans-Italic.ttf
 			fi
 		fi
-		version pxl & PXL=true
+		version pxl; PXL=true
 	fi
 }
 
@@ -99,7 +99,7 @@ oxygen() {
 		set Black Bold Medium Regular Light Thin
 		for i do cp $SYSFONT/$i.ttf $SYSFONT/SlateForOnePlus-$i.ttf; done
 		cp $SYSFONT/Regular.ttf $SYSFONT/SlateForOnePlus-Book.ttf
-		version oos & OOS=true
+		version oos; OOS=true
 	fi
 }
 
@@ -120,7 +120,7 @@ miui() {
 			sed -i '/"mipro-normal"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
 			sed -i '/"mipro-regular"/,/family>/{/400/s/MiLanProVF/Regular/;/stylevalue="340"/d}' $SYSXML
 		fi	
-		version miui & MIUI=true
+		version miui; MIUI=true
 	fi
 }
 
@@ -146,12 +146,12 @@ samsung() {
 	if grep -q Samsung $SYSXML; then
 		sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
 		[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
-		version sam & SAM=true
+		version sam; SAM=true
 	fi
 }
 
 rom() {
-	PXL=false & OOS=false & MIUI=false & LG=false & SAM=false
+	PXL=false; OOS=false; MIUI=false; LG=false; SAM=false
 	pixel
 	if ! $PXL; then oxygen
 		if ! $OOS; then miui
@@ -240,7 +240,7 @@ if $OPTION; then
 		ui_print "- Use BOLD font?"
 		ui_print "  $KEY1 = Yes; $KEY2 = No"
 		ui_print "  "
-		$SEL && { BOLD=1 & ui_print "  Selected: Yes"; } ||  ui_print "  Selected: No"
+		$SEL && { BOLD=1; ui_print "  Selected: Yes"; } ||  ui_print "  Selected: No"
 		sleep 0.4
 
 		if [ $BOLD -eq 1 ]; then
@@ -268,7 +268,7 @@ if $OPTION; then
 			ui_print "- High Legibility?"
 			ui_print "  $KEY1 = Yes; $KEY2 = No"
 			ui_print "  "
-			$SEL && { LEGIBLE=true & ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
+			$SEL && { LEGIBLE=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
 			sleep 0.4
 		fi
 
@@ -277,7 +277,7 @@ if $OPTION; then
 			ui_print "- Rounded Corners?"
 			ui_print "  $KEY1 = Yes; $KEY2 = No"
 			ui_print "  "
-			$SEL && { ROUNDED=true & ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
+			$SEL && { ROUNDED=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
 			sleep 0.4
 		fi
 
