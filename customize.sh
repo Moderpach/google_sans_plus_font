@@ -13,6 +13,8 @@ patch() {
 	sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
 }
 
+version() { sed -i 3"s/$/-$1&/" $MODPROP; }
+
 headline() {
 	cp $FONTDIR/hf/*ttf $SYSFONT
 	sed -i '/"sans-serif">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
@@ -31,8 +33,8 @@ condensed() {
 full() { headline; body; condensed; }
 
 text() {
-	[ $HF -eq 2 ] && cp $FONTDIR/tx/hf/*ttf $SYSFONT
-	[ $BF -eq 2 ] && cp $FONTDIR/tx/[bc]f/*ttf $SYSFONT
+	[ $HF -eq 2 ] && ( cp $FONTDIR/tx/hf/*ttf $SYSFONT & version hftxt )
+	[ $BF -eq 2 ] && ( cp $FONTDIR/tx/[bc]f/*ttf $SYSFONT & version bftxt )
 }
 
 bold() {
@@ -44,15 +46,20 @@ bold() {
 		sed -i '/"sans-serif">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
 		sed -i '/"sans-serif-condensed">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
 	fi
+	version bld
 }
 
-legible() { cp $FONTDIR/bf/hl/*ttf $SYSFONT; }
+legible() {
+	cp $FONTDIR/bf/hl/*ttf $SYSFONT
+	version lgbl
+}
 
 rounded() {
 	local src=$FONTDIR/bf/rd x
 	[ $BF -eq 2 ] && src=$FONTDIR/tx/bf/rd
 	[ $BOLD -eq 1 ] && x=25 || { [ $BOLD -eq 2 ] && x=50; } || { $LEGIBLE && x=hl; }
 	cp $src/Regular$x.ttf $SYSFONT/Regular.ttf
+	version rnd
 }
 
 clean_up() {
@@ -60,11 +67,9 @@ clean_up() {
 	rmdir -p $PRDFONT $SYSETC
 }
 
-version() { sed -i 3"s/$/-$1&/" $MODPROP; }
-
 pixel() {
 	local src dest
-	if [ -f $ORIGDIR/product/fonts/GoogleSans-Regular.ttf ]; then
+	if [ -f $ORIGDIR/product/fonts/GoogleSans-Regular.ttf ] || [ -f $ORIGDIR/system/product/fonts/GoogleSans-Regular.ttf ]; then
 		dest=$PRDFONT
 	elif [ -f $ORIGDIR/system/fonts/GoogleSans-Regular.ttf ]; then
 		dest=$SYSFONT
@@ -290,11 +295,10 @@ ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
 patch
 [ $PART -eq 1 ] && full || ( headline & version hf )
-[ $HF -eq 2 ] && ( text & version hftxt )
-[ $BF -eq 2 ] && ( text & version bftxt )
-[ $BOLD -ne 0 ] && ( bold & version bld )
-$LEGIBLE && ( legible & version lgbl )
-$ROUNDED && ( rounded & version rnd )
+[ $HF -eq 2 ] || [ $BF -eq 2 ] && text
+[ $BOLD -ne 0 ] && bold
+$LEGIBLE && legible
+$ROUNDED && rounded
 rom
 
 ### CLEAN UP ###
