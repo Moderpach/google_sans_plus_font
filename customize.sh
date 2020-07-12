@@ -13,8 +13,6 @@ patch() {
 	sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
 }
 
-version() { sed -i 3"s/$/-$1&/" $MODPROP; }
-
 headline() {
 	cp $FONTDIR/hf/*ttf $SYSFONT
 	sed -i '/"sans-serif">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
@@ -95,7 +93,9 @@ pixel() {
 				cp $src/Italic.ttf $dest/GoogleSans-Italic.ttf
 			fi
 		fi
-		version pxl; PXL=true
+		version pxl
+	else
+		false
 	fi
 }
 
@@ -104,7 +104,9 @@ oxygen() {
 		set Black Bold Medium Regular Light Thin
 		for i do cp $SYSFONT/$i.ttf $SYSFONT/SlateForOnePlus-$i.ttf; done
 		cp $SYSFONT/Regular.ttf $SYSFONT/SlateForOnePlus-Book.ttf
-		version oos; OOS=true
+		version oos
+	else
+		false
 	fi
 }
 
@@ -125,14 +127,17 @@ miui() {
 			sed -i '/"mipro-normal"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
 			sed -i '/"mipro-regular"/,/family>/{/400/s/MiLanProVF/Regular/;/stylevalue="340"/d}' $SYSXML
 		fi	
-		version miui; MIUI=true
+		version miui
+	else
+		false
 	fi
 }
 
 lg() {
+	local lg=false
 	if grep -q lg-sans-serif $SYSXML; then
 		sed -i '/"lg-sans-serif">/,/family>/{/"lg-sans-serif">/!d};/"sans-serif">/,/family>/{/"sans-serif">/!H};/"lg-sans-serif">/G' $SYSXML
-		LG=true
+		lg=true
 	fi
 	if [ -f $ORIGDIR/system/etc/fonts_lge.xml ]; then
 		cp $ORIGDIR/system/etc/fonts_lge.xml $SYSETC
@@ -142,31 +147,26 @@ lg() {
 			sed -i '/"default_roboto">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $lgxml
 			[ $BOLD -eq 3 ] && sed -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $lgxml
 		fi
-		LG=true
+		lg=true
 	fi
-	$LG && version lg
+	$lg && version lg || false
 }
 
 samsung() {
 	if grep -q Samsung $SYSXML; then
 		sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
 		[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
-		version sam; SAM=true
+		version sam
+	else
+		false
 	fi
 }
 
 rom() {
-	PXL=false; OOS=false; MIUI=false; LG=false; SAM=false
-	pixel
-	if ! $PXL; then oxygen
-		if ! $OOS; then miui
-			if ! $MIUI; then lg
-				if ! $LG; then samsung
-				fi
-			fi
-		fi
-	fi
+	pixel || oxygen || miui || lg || samsung
 }
+
+version() { sed -i 3"s/$/-$1&/" $MODPROP; }
 
 ### SELECTIONS ###
 OPTION=false
