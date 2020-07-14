@@ -31,8 +31,8 @@ condensed() {
 full() { headline; body; condensed; }
 
 text() {
-	[ $HF -eq 2 ] && ( cp $FONTDIR/tx/hf/*ttf $SYSFONT & version hftxt )
-	[ $BF -eq 2 ] && ( cp $FONTDIR/tx/[bc]f/*ttf $SYSFONT & version bftxt )
+	[ $HF -eq 2 ] && ( cp $FONTDIR/tx/hf/*ttf $SYSFONT; version hftxt )
+	[ $BF -eq 2 ] && ( cp $FONTDIR/tx/[bc]f/*ttf $SYSFONT; version bftxt )
 }
 
 bold() {
@@ -294,7 +294,7 @@ ui_print "  "
 ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
 patch
-[ $PART -eq 1 ] && full || ( headline & version hf )
+[ $PART -eq 1 ] && full || ( headline; version hf )
 [ $HF -eq 2 ] || [ $BF -eq 2 ] && text
 [ $BOLD -ne 0 ] && bold
 $LEGIBLE && legible
