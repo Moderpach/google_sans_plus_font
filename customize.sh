@@ -1,3 +1,6 @@
+# Custom Font Installer 
+# by nongthaihoang @ xda
+
 [ ! $MAGISKTMP ] && MAGISKTMP=$(magisk --path)/.magisk
 [ -d $MAGISKTMP ] && ORIGDIR=$MAGISKTMP/mirror
 FONTDIR=$MODPATH/fonts
@@ -31,8 +34,8 @@ condensed() {
 full() { headline; body; condensed; }
 
 text() {
-	[ $HF -eq 2 ] && ( cp $FONTDIR/tx/hf/*ttf $SYSFONT; version hftxt )
-	[ $BF -eq 2 ] && ( cp $FONTDIR/tx/[bc]f/*ttf $SYSFONT; version bftxt )
+	[ $HF -eq 2 ] && ( cp $FONTDIR/tx/hf/*ttf $SYSFONT; ver hftxt )
+	[ $BF -eq 2 ] && ( cp $FONTDIR/tx/[bc]f/*ttf $SYSFONT; ver bftxt )
 }
 
 bold() {
@@ -44,12 +47,12 @@ bold() {
 		sed -i '/"sans-serif">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
 		sed -i '/"sans-serif-condensed">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
 	fi
-	version bld
+	ver bld
 }
 
 legible() {
 	cp $FONTDIR/bf/hl/*ttf $SYSFONT
-	version lgbl
+	ver lgbl
 }
 
 rounded() {
@@ -57,11 +60,11 @@ rounded() {
 	[ $BF -eq 2 ] && src=$FONTDIR/tx/bf/rd
 	[ $BOLD -eq 1 ] && x=25 || { [ $BOLD -eq 2 ] && x=50; } || { $LEGIBLE && x=hl; }
 	cp $src/Regular$x.ttf $SYSFONT/Regular.ttf
-	version rnd
+	ver rnd
 }
 
 clean_up() {
-	rm -rf $FONTDIR $MODPATH/LICENSE
+	rm -rf $FONTDIR $MODPATH/LICENSE $MODPATH/tools
 	rmdir -p $PRDFONT $SYSETC
 }
 
@@ -93,7 +96,7 @@ pixel() {
 				cp $src/Italic.ttf $dest/GoogleSans-Italic.ttf
 			fi
 		fi
-		version pxl
+		ver pxl
 	else
 		false
 	fi
@@ -104,7 +107,7 @@ oxygen() {
 		set Black Bold Medium Regular Light Thin
 		for i do cp $SYSFONT/$i.ttf $SYSFONT/SlateForOnePlus-$i.ttf; done
 		cp $SYSFONT/Regular.ttf $SYSFONT/SlateForOnePlus-Book.ttf
-		version oos
+		ver oos
 	else
 		false
 	fi
@@ -127,7 +130,7 @@ miui() {
 			sed -i '/"mipro-normal"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
 			sed -i '/"mipro-regular"/,/family>/{/400/s/MiLanProVF/Regular/;/stylevalue="340"/d}' $SYSXML
 		fi	
-		version miui
+		ver miui
 	else
 		false
 	fi
@@ -149,24 +152,24 @@ lg() {
 		fi
 		lg=true
 	fi
-	$lg && version lg || false
+	$lg && ver lg || false
 }
 
 samsung() {
 	if grep -q Samsung $SYSXML; then
 		sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
 		[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
-		version sam
+		ver sam
 	else
 		false
 	fi
 }
 
 rom() {
-	pixel || oxygen || miui || lg || samsung
+	pixel || oxygen || miui || samsung || lg
 }
 
-version() { sed -i 3"s/$/-$1&/" $MODPROP; }
+ver() { sed -i 3"s/$/-$1&/" $MODPROP; }
 
 ### SELECTIONS ###
 OPTION=false
@@ -177,7 +180,7 @@ BOLD=0
 LEGIBLE=false
 ROUNDED=false
 
-. $FONTDIR/selector.sh
+. $MODPATH/tools/selector.sh
 
 if [ $SEL ]; then
 	OPTION=true	
@@ -189,7 +192,7 @@ fi
 if $OPTION; then
 
 	ui_print "  "
-	ui_print "- WHERE to install?"
+	ui_print "- WHICH to install?"
 	ui_print "  $KEY1 = Next Option; $KEY2 = Ok"
 	ui_print "  "
 	ui_print "  1. Full"
@@ -206,7 +209,7 @@ if $OPTION; then
 	sleep 0.4
 
 	ui_print "  "
-	ui_print "- Which HEADLINE font style?"
+	ui_print "- HEADLINE font?"
 	ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 	ui_print "  "
 	ui_print "  1. Default"
@@ -225,7 +228,7 @@ if $OPTION; then
 	if [ $PART -eq 1 ]; then
 
 		ui_print "  "
-		ui_print "- Which BODY font style?"
+		ui_print "- BODY font?"
 		ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 		ui_print "  "
 		ui_print "  1. Default"
@@ -268,21 +271,21 @@ if $OPTION; then
 			sleep 0.4
 		fi
 
-		if [ $BF -eq 1 ] && [ $BOLD -eq 0 ]; then
-			ui_print "  "
-			ui_print "- High Legibility?"
-			ui_print "  $KEY1 = Yes; $KEY2 = No"
-			ui_print "  "
-			$SEL && { LEGIBLE=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
-			sleep 0.4
-		fi
-
 		if [ $BOLD -ne 3 ]; then
 			ui_print "  "
 			ui_print "- Rounded Corners?"
 			ui_print "  $KEY1 = Yes; $KEY2 = No"
 			ui_print "  "
 			$SEL && { ROUNDED=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
+			sleep 0.4
+		fi
+
+		if [ $BF -eq 1 ] && [ $BOLD -eq 0 ]; then
+			ui_print "  "
+			ui_print "- High Legibility?"
+			ui_print "  $KEY1 = Yes; $KEY2 = No"
+			ui_print "  "
+			$SEL && { LEGIBLE=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
 			sleep 0.4
 		fi
 
@@ -294,11 +297,11 @@ ui_print "  "
 ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
 patch
-[ $PART -eq 1 ] && full || ( headline; version hf )
+[ $PART -eq 1 ] && full || ( headline; ver hf )
 [ $HF -eq 2 ] || [ $BF -eq 2 ] && text
 [ $BOLD -ne 0 ] && bold
-$LEGIBLE && legible
 $ROUNDED && rounded
+$LEGIBLE && legible
 rom
 
 ### CLEAN UP ###
