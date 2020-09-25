@@ -12,8 +12,7 @@ MODPROP=$MODPATH/module.prop
 
 patch() {
 	[ -f $ORIGDIR/system/etc/fonts.xml ] && cp $ORIGDIR/system/etc/fonts.xml $SYSXML || abort "! $ORIGDIR/system/etc/fonts.xml: file not found"
-	sed -n '/"sans-serif">/,/family>/p' $SYSXML | grep -Po '(?<=(>)).*(?=-Regular)'
-	DEFFONT=$(sed -n '/"sans-serif">/,/family>/p' $SYSXML | grep Regular | sed 's/.*normal">//;s/-Regular.*//')
+	DEFFONT=$(sed -n '/"sans-serif">/,/family>/p' $SYSXML | grep '\-Regular.' | sed 's/.*">//;s/-.*//')
 	if ! grep -q 'family >' $SYSXML; then
 		sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
 		sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
@@ -169,8 +168,17 @@ samsung() {
 	fi
 }
 
+realme() {
+	if grep -q COLOROS $SYSXML; then
+		[ -f $ORIDIR/system/etc/fonts_base.xml ] && cp $SYSXML $SYSETC/fonts_base.xml
+		ver rui
+	else
+		false
+	fi
+}
+
 rom() {
-	pixel || oxygen || miui || samsung || lg
+	pixel || oxygen || miui || samsung || lg || realme
 }
 
 ver() { sed -i 3"s/$/-$1&/" $MODPROP; }
