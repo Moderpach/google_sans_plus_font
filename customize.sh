@@ -12,23 +12,27 @@ MODPROP=$MODPATH/module.prop
 
 patch() {
 	[ -f $ORIGDIR/system/etc/fonts.xml ] && cp $ORIGDIR/system/etc/fonts.xml $SYSXML || abort "! $ORIGDIR/system/etc/fonts.xml: file not found"
-	sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
-	sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
+	sed -n '/"sans-serif">/,/family>/p' $SYSXML | grep -Po '(?<=(>)).*(?=-Regular)'
+	DEFFONT=$(sed -n '/"sans-serif">/,/family>/p' $SYSXML | grep Regular | sed 's/.*normal">//;s/-Regular.*//')
+	if ! grep -q 'family >' $SYSXML; then
+		sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
+		sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
+	fi
 }
 
 headline() {
 	cp $FONTDIR/hf/*ttf $SYSFONT
-	sed -i '/"sans-serif">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
+	sed -i "/\"sans-serif\">/,/family>/{s/$DEFFONT-M/M/;s/$DEFFONT-B/B/}" $SYSXML
 }
 
 body() {
 	cp $FONTDIR/bf/*ttf $SYSFONT 
-	sed -i '/"sans-serif">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $SYSXML
+	sed -i "/\"sans-serif\">/,/family>/{s/$DEFFONT-T/T/;s/$DEFFONT-L/L/;s/$DEFFONT-R/R/;s/$DEFFONT-I/I/}" $SYSXML
 }
 
 condensed() {
 	cp $FONTDIR/cf/*ttf $SYSFONT
-	sed -i 's/RobotoC/C/' $SYSXML
+	sed -i "s/RobotoC/C/" $SYSXML
 }
 
 full() { headline; body; condensed; }
