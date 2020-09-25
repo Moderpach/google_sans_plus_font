@@ -1,7 +1,7 @@
 # Google Sans Plus Font
 **Google Sans font for Android**
 
-[![version](https://img.shields.io/badge/Version-4.3-brightgreen.svg)](https://github.com/nongthaihoang/google_sans_plus_font/releases/tag/v4.2) 
+[![version](https://img.shields.io/badge/Version-4.3-brightgreen.svg)](https://github.com/nongthaihoang/google_sans_plus_font/releases/tag/v4.3) 
 ![updated](https://img.shields.io/badge/Updated-Sep_25,_2020-green.svg) 
 [![forum](https://img.shields.io/badge/Forum-XDA-orange.svg)](https://forum.xda-developers.com/apps/magisk/font-headline-fonts-nongthaihoang-t3886349) 
 [![download](https://img.shields.io/badge/Download-↓-yellow.svg)](https://github.com/nongthaihoang/google_sans_plus_font/releases)
