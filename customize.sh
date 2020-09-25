@@ -170,7 +170,7 @@ samsung() {
 
 realme() {
 	if grep -q COLOROS $SYSXML; then
-		[ -f $ORIDIR/system/etc/fonts_base.xml ] && cp $SYSXML $SYSETC/fonts_base.xml
+		[ -f $ORIGDIR/system/etc/fonts_base.xml ] && cp $SYSXML $SYSETC/fonts_base.xml
 		ver rui
 	else
 		false
