@@ -53,13 +53,13 @@ text() {
 }
 
 bold() {
-	local src=$FONTDIR/bf/bd
-	[ $BF -eq 2 ] && src=$FONTDIR/tx/bf/bd
-	if [ $BOLD -eq 1 ]; then cp $src/25/*ttf $SYSFONT
-	elif [ $BOLD -eq 2 ]; then cp $src/50/*ttf $SYSFONT
-	else
+	if [ $BOLD -eq 3 ]; then
 		sed -i '/"sans-serif">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
 		sed -i '/"sans-serif-condensed">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
+	else
+		[ $BF -eq 2 ] && local bf=/tx
+		local src=$FONTDIR$bf/bf/bd x=/25 && [ $BOLD -eq 2 ] && x=/50
+		cp $src$x/*ttf $SYSFONT
 	fi
 	ver bld
 }
@@ -70,9 +70,8 @@ legible() {
 }
 
 rounded() {
-	local src=$FONTDIR/bf/rd x
-	[ $BF -eq 2 ] && src=$FONTDIR/tx/bf/rd
-	[ $BOLD -eq 1 ] && x=25 || { [ $BOLD -eq 2 ] && x=50; } || { $LEGIBLE && x=hl; }
+	[ $BF -eq 2 ] && local bf=/tx
+	local src=$FONTDIR$bf/bf/rd x && [ $BOLD -eq 1 ] && x=25 || { [ $BOLD -eq 2 ] && x=50; } || { $LEGIBLE && x=hl; }
 	cp $src/Regular$x.ttf $SYSFONT/Regular.ttf
 	ver rnd
 }
@@ -83,31 +82,29 @@ clean_up() {
 }
 
 pixel() {
-	local src dest
 	if [ -f $ORIGDIR/product/fonts/GoogleSans-Regular.ttf ] || [ -f $ORIGDIR/system/product/fonts/GoogleSans-Regular.ttf ]; then
-		dest=$PRDFONT
+		local dest=$PRDFONT
 	elif [ -f $ORIGDIR/system/fonts/GoogleSans-Regular.ttf ]; then
-		dest=$SYSFONT
+		local dest=$SYSFONT
 	fi
 	if [ $dest ]; then
-		if [ $HF -eq 2 ]; then
+		if [ $HF -eq 1 ]; then
+			cp $FONTDIR/px/*ttf $dest
+		else
 			set BoldItalic Bold MediumItalic Medium
 			for i do cp $SYSFONT/$i.ttf $dest/GoogleSans-$i.ttf; done
 			cp $FONTDIR/tx/bf/Regular.ttf $dest/GoogleSans-Regular.ttf
 			cp $FONTDIR/tx/bf/Italic.ttf $dest/GoogleSans-Italic.ttf
-		else
-			cp $FONTDIR/px/*ttf $dest
 		fi
 		if [ $BOLD -ne 0 ]; then
 			if [ $BOLD -eq 3 ]; then
 				cp $dest/GoogleSans-Medium.ttf $dest/GoogleSans-Regular.ttf
 				cp $dest/GoogleSans-MediumItalic.ttf $dest/GoogleSans-Italic.ttf
 			else
-				src=$FONTDIR/bf/bd
-				[ $HF -eq 2 ] && src=$FONTDIR/tx/bf/bd
-				[ $BOLD -eq 1 ] && src=$src/25 || src=$src/50
-				cp $src/Regular.ttf $dest/GoogleSans-Regular.ttf
-				cp $src/Italic.ttf $dest/GoogleSans-Italic.ttf
+				[ $HF -eq 2 ] && local hf=/tx
+				local src=$FONTDIR$hf/bf/bd x=/25 && [ $BOLD -eq 2 ] && x=/50
+				cp $src$x/Regular.ttf $dest/GoogleSans-Regular.ttf
+				cp $src$x/Italic.ttf $dest/GoogleSans-Italic.ttf
 			fi
 		fi
 		ver pxl
@@ -192,9 +189,7 @@ realme() {
 	fi
 }
 
-rom() {
-	pixel || oxygen || miui || samsung || lg || realme
-}
+rom() { pixel || oxygen || miui || samsung || lg || realme; }
 
 ver() { sed -i 3"s/$/-$1&/" $MODPROP; }
 
@@ -326,8 +321,8 @@ patch
 [ $PART -eq 1 ] && full || ( headline; ver hf )
 [ $HF -eq 2 ] || [ $BF -eq 2 ] && text
 [ $BOLD -ne 0 ] && bold
-$ROUNDED && rounded
 $LEGIBLE && legible
+$ROUNDED && rounded
 rom
 
 ### CLEAN UP ###
